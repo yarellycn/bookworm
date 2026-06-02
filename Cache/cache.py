@@ -1,33 +1,33 @@
-import os , json
+import os, json
 
-DOSSIER_CACHE="Cache"
+FOLDER_CACHE = "Cache"
 
-def charge_cache(id_livre,tache):
 
-    """ Fonction de chargement de du cache si existant """
+def charge_cache(id_book, task):
+    """Fonction de chargement de du cache si existant"""
 
-    chemin_fichier = os.path.join(DOSSIER_CACHE, f"{id_livre}_{tache}.json")
+    folder_file = os.path.join(FOLDER_CACHE, f"{id_book}_{task}.json")
 
-    try : 
-        if os.path.exists(chemin_fichier):
-            with open(chemin_fichier, "r", encoding="utf-8") as file:
+    try:
+        if os.path.exists(folder_file):
+            with open(folder_file, "r", encoding="utf-8") as file:
                 return json.load(file)
         return None
-    except :
-        print(f"Erreur chache , Impossible de recherche le livre {id_livre} en cache")
-
-def sauvegarde_cache(id_livre, tache, data):
-
-    """Creation du cache avec ID et fonction utilisé , cache en json"""
-    
-    if not os.path.exists(DOSSIER_CACHE):
-        os.makedirs(DOSSIER_CACHE)
-    
-    try :
-        chemin_fichier = os.path.join(DOSSIER_CACHE,f"{id_livre}_{tache}.json")
-        with open(chemin_fichier,"w", encoding="utf-8") as f:
-            json.dump(data,f, indent=4, ensure_ascii=False)
     except:
-        print("Sauvegare du cache impossible pour le livre : {id_livre} avec le fonction : {tache}" )
-        
+        print(f"Erreur chache , Impossible de recherche le livre {id_book} en cache")
 
+
+def save_cache(id_book, task, data):
+    """Creation du cache avec ID et fonction utilisé , cache en json"""
+
+    if not os.path.exists(FOLDER_CACHE):
+        os.makedirs(FOLDER_CACHE)
+
+    try:
+        folder_file = os.path.join(FOLDER_CACHE, f"{id_book}_{task}.json")
+        with open(folder_file, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=4, ensure_ascii=False)
+    except:
+        print(
+            "Sauvegare du cache impossible pour le livre : {id_book} avec le fonction : {task}"
+        )
