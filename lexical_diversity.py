@@ -31,11 +31,11 @@ def ratio_of_word_tokens_to_unique_word_tokens(tokens):
     ratio = number_of_word_tokens(tokens) / number_of_unique_word_tokens(tokens)
     return ratio
 
-def get_lexical_diversity():
+def get_lexical_diversity(book_id):
     """Return the lexical diversity of a book."""
 
-    # book_content = download_book(book_id)
-    file = tools.read_text_file("test.txt")
+    book_content = tools.download_book(book_id)
+    file = tools.read_text_file(book_content)
     tokens = word_tokenize(file)
     cleaned_tokens = tools.cleaner(tokens)
 
@@ -47,7 +47,3 @@ def get_lexical_diversity():
         "mwl": float(average_word_length(cleaned_tokens)),
         "mwf": float(ratio_of_word_tokens_to_unique_word_tokens(cleaned_tokens))
     }
-
-if __name__ == "__main__":
-    result = get_lexical_diversity()
-    print(result)
