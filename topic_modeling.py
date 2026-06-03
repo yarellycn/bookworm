@@ -3,7 +3,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 def section_cuter(book_id):
     path_book = f"Data/Books/{book_id}_book.txt"
-    book = tools.true_text(path_book)
+    book = tools.header_and_footer_remover(path_book)
     section_brut = re.split(r'CHAPTER\s+[IVXLCDM\d]+|Chapter\s+\d+', book, flags=re.IGNORECASE)
     sections = [s.strip() for s in section_brut if len(s.strip()) > 100]
     return sections
