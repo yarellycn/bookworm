@@ -46,3 +46,9 @@ def cli():
 
 if __name__ == "__main__":
     cli()
+
+# if book_id is None:
+#     raise ValueError("Please specify a book id.")
+
+# if (book_id <= 0) or not isinstance(book_id, int):
+#     raise ValueError("book_id incorrect.")

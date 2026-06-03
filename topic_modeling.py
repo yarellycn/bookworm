@@ -10,7 +10,3 @@ def section_cuter(book_id):
 def topic (book_id):
     if cache.book_in_cache(book_id):
         return
-
-
-
-
