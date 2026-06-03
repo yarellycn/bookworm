@@ -1,4 +1,5 @@
 import argparse, sys, os
+import topic_modeling as topic
 
 main_file = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if main_file not in sys.path:
@@ -28,7 +29,7 @@ def cli():
         return
 
     elif args.topics:
-        tools.true_text("pg11.txt")
+        topic.topic(args.ask[0])
         return
 
     elif args.entities:

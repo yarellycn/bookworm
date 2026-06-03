@@ -1,5 +1,5 @@
 import string, re, urllib.request ,os
-import cache
+import cache, tools
 
 url= "https://www.gutenberg.org/ebooks/"
 url_end=".txt.utf-8"
@@ -7,9 +7,9 @@ url_end=".txt.utf-8"
 
 def download_book(book_id):
    try :
-    url_final = f"{url}{id}{url_end}"
+    url_final = f"{url}{book_id}{url_end}"
     name_file = f"{book_id}_book.txt"
-    book_folder = "Data/books"
+    book_folder = "Data/Books"
     path_file= os.path.join(book_folder,name_file)
     urllib.request.urlretrieve(url_final,path_file)
     print(f"Fichier {name_file} correctement téléchargé")
@@ -39,3 +39,14 @@ def true_text(path_file):
     
 def cleaner(tokens):
     return [word.lower() for word in tokens if word not in string.punctuation]
+
+def setup_action(book_id, action):
+   
+   cache_action = cache.charge_cache(book_id, action)
+   
+   if cache_action is not None:
+        return cache_action
+   
+   if not cache.book_in_cache(book_id):
+        tools.download_book(book_id)
+   
