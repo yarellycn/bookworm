@@ -1,6 +1,6 @@
-from nltk import FreqDist, word_tokenize
-
 import tools
+
+from nltk import FreqDist
 
 def number_of_word_tokens(tokens):
     """Return the number of word tokens in the book."""
@@ -33,17 +33,13 @@ def ratio_of_word_tokens_to_unique_word_tokens(tokens):
 
 def get_lexical_diversity(book_id):
     """Return the lexical diversity of a book."""
-
-    book_content = tools.download_book(book_id)
-    file = tools.read_text_file(book_content)
-    tokens = word_tokenize(file)
-    cleaned_tokens = tools.cleaner(tokens)
+    tokens = tools.get_tokens(book_id)
 
     return {
-        "tok": int(number_of_word_tokens(cleaned_tokens)),
-        "typ": int(number_of_unique_word_tokens(cleaned_tokens)),
-        "hap": int(number_of_tokens_occurring_once(cleaned_tokens)),
-        "ttr": float(ratio_of_unique_word_tokens_to_word_tokens(cleaned_tokens)),
-        "mwl": float(average_word_length(cleaned_tokens)),
-        "mwf": float(ratio_of_word_tokens_to_unique_word_tokens(cleaned_tokens))
+        "tok": int(number_of_word_tokens(tokens)),
+        "typ": int(number_of_unique_word_tokens(tokens)),
+        "hap": int(number_of_tokens_occurring_once(tokens)),
+        "ttr": float(ratio_of_unique_word_tokens_to_word_tokens(tokens)),
+        "mwl": float(average_word_length(tokens)),
+        "mwf": float(ratio_of_word_tokens_to_unique_word_tokens(tokens))
     }

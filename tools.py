@@ -1,5 +1,6 @@
 import string, re, urllib.request ,os
-import cache, tools
+from nltk import word_tokenize
+import tools, cache
 
 url= "https://www.gutenberg.org/ebooks/"
 url_end=".txt.utf-8"
@@ -21,7 +22,7 @@ def read_text_file(filename):
     with open(filename, "r", encoding="utf-8") as file:
         return file.read()
     
-def true_text(path_file):
+def header_and_footer_remover(path_file):
     """Clean the start and end balise of Gutenberg projet"""
     data = read_text_file(path_file)
 
@@ -60,7 +61,9 @@ def get_book_language(path_file):
         print("Impossible de lire la langue dans {path_file}: {e}")
         return 
     
-def cleaner(tokens):
+def cleaner(file_path):
+    text = header_and_footer_remover(file_path)
+    tokens = word_tokenize(text)
     return [word.lower() for word in tokens if word not in string.punctuation]
 
 def setup_action(book_id, action):
@@ -73,3 +76,9 @@ def setup_action(book_id, action):
    if not cache.book_in_cache(book_id):
         tools.download_book(book_id)
    
+def get_tokens(book_id):
+    book_file = f"{book_id}_book.txt"
+    path_file = os.path.join("Data/books", book_file)
+    
+    cleaned_tokens = cleaner(path_file)
+    return cleaned_tokens
