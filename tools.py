@@ -78,7 +78,7 @@ def setup_action(book_id, action):
    
 def get_tokens(book_id):
     book_file = f"{book_id}_book.txt"
-    path_file = os.path.join("Data/books", book_file)
+    path_file = os.path.join("Data/Books", book_file)
     
     cleaned_tokens = cleaner(path_file)
     return cleaned_tokens
