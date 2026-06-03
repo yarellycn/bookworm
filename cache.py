@@ -1,10 +1,11 @@
 import os, json
 
 FOLDER_CACHE = "Data/Cache"
+FOLDER_BOOK= "Data/Books"
 
-def book_in_cache(book_id):
+def book_in_cache(book_id): 
     name_file = f"{book_id}_book.txt"
-    return os.path.exists(f"{FOLDER_CACHE}/{name_file}")
+    return os.path.exists(f"{FOLDER_BOOK}/{name_file}")
 
 def charge_cache(book_id, task):
     """Fonction de chargement de du cache si existant"""

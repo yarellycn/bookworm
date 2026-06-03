@@ -74,11 +74,12 @@ def setup_action(book_id, action):
         return cache_action
    
    if not cache.book_in_cache(book_id):
+        
         tools.download_book(book_id)
    
 def get_tokens(book_id):
     book_file = f"{book_id}_book.txt"
-    path_file = os.path.join("Data/books", book_file)
+    path_file = os.path.join("Data/Books", book_file)
     
     cleaned_tokens = cleaner(path_file)
     return cleaned_tokens

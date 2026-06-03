@@ -1,6 +1,6 @@
 import argparse, sys, os
 import topic_modeling as topic
-import summarize
+import summarize, similar 
 
 main_file = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if main_file not in sys.path:
@@ -42,6 +42,8 @@ def cli():
         return
 
     elif args.similar:
+        similar.similar_books(args.ask[0])
+
         return
 
     elif args.card:
