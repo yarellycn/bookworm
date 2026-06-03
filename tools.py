@@ -53,9 +53,9 @@ def get_book_language(path_file):
         match = re.search(r"Language:\s+([a-zA-Z-]+)", en_tete, flags=re.IGNORECASE)
         
         if match:
-            return match.group(1).strip()
+            return match.group(1).strip().lower()
         
-        return "English"
+        return "english"
         
     except ValueError as e:
         print("Impossible de lire la langue dans {path_file}: {e}")

@@ -1,5 +1,6 @@
 import argparse, sys, os
 import topic_modeling as topic
+import summarize
 
 main_file = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if main_file not in sys.path:
@@ -33,9 +34,11 @@ def cli():
         return
 
     elif args.entities:
+        
         return
 
     elif args.summarize:
+        summarize.summarize_book(args.ask[0])
         return
 
     elif args.similar:
