@@ -30,7 +30,7 @@ def save_cache(book_id, task, data):
         os.makedirs(FOLDER_CACHE)
 
     try:
-        folder_file = os.path.join(FOLDER_CACHE, f"{id_book}_{task}.json")
+        folder_file = os.path.join(FOLDER_CACHE, f"{book_id}_{task}.json")
         with open(folder_file, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=4, ensure_ascii=False)
     except:

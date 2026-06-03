@@ -1,4 +1,4 @@
-import re, tools
+import re, tools, cache
 
 def section_cuter(book_id):
     path_book = f"Data/Books/{book_id}_book.txt"
@@ -8,8 +8,8 @@ def section_cuter(book_id):
     return sections
 
 def topic (book_id):
-    
-    return
+    if cache.book_in_cache(book_id):
+        return
 
 
 
