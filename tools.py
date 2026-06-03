@@ -1,23 +1,21 @@
-import string, re
-from urllib.request import urlopen
+import string, re, urllib.request ,os
+import cache
+
+url= "https://www.gutenberg.org/ebooks/"
+url_end=".txt.utf-8"
+
 
 def download_book(book_id):
-    """Downloads the text of the book with the given ID and saves it."""
-    # f stands for format string, which allows us to insert variables into the string.
-    url = f"https://www.gutenberg.org/files/{book_id}/{book_id}-0.txt"
-
-    # Connect to the URL
-    response = urlopen(url)
-
-    # Read the content of the response
-    text = response.read().decode("utf-8")
-
-    filename = f"{book_id}_book.txt"
-
-    with open(filename, "w", encoding="utf-8") as file:
-        file.write(text)
-
-    return filename
+   try :
+    url_final = f"{url}{id}{url_end}"
+    name_file = f"{book_id}_book.txt"
+    book_folder = "Data/books"
+    path_file= os.path.join(book_folder,name_file)
+    urllib.request.urlretrieve(url_final,path_file)
+    print(f"Fichier {name_file} correctement téléchargé")
+    return path_file
+   except:
+      print(f"Erreur lors du telechargement de {book_id}")
 
 def read_text_file(filename):
     with open(filename, "r", encoding="utf-8") as file:

@@ -5,7 +5,6 @@ if main_file not in sys.path:
     sys.path.append(main_file)
 
 import tools
-from Cache import cache
 
 
 def cli():
