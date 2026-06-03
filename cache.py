@@ -1,6 +1,6 @@
 import os, json
 
-FOLDER_CACHE = "Cache"
+FOLDER_CACHE = "Data/Cache"
 
 
 def charge_cache(id_book, task):

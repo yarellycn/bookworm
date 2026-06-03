@@ -4,6 +4,7 @@ main_file = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if main_file not in sys.path:
     sys.path.append(main_file)
 
+import tools
 from Cache import cache
 
 
@@ -23,20 +24,26 @@ def cli():
 
     args = parser.parse_args()
 
-    if args.lexdiv is not None:
+
+    if args.lexdiv:
         return
 
-    elif args.topics is not None:
+    elif args.topics:
+        tools.true_text("pg11.txt")
         return
 
-    elif args.entities is not None:
+    elif args.entities:
         return
 
-    elif args.summarize is not None:
+    elif args.summarize:
         return
 
-    elif args.similar is not None:
+    elif args.similar:
         return
 
-    elif args.card is not None:
+    elif args.card:
         return
+    
+
+if __name__ == "__main__":
+    cli()
