@@ -36,6 +36,29 @@ def true_text(path_file):
     
     print(f" Balises de début/fin non détectées dans {path_file} !")
     return data.strip()
+
+
+def get_book_language(path_file):
+    try:
+        with open(path_file, "r", encoding="utf-8") as file:
+            data = file.read()
+        # on prend les donné avant la balise start
+        start_match = re.search(r"\*\*\*\s*START OF THE PROJECT GUTENBERG EBOOK.*?\*\*\*", data, flags=re.IGNORECASE)
+        
+        if start_match:
+            en_tete = data[:start_match.start()]
+        else:
+            en_tete = data
+        match = re.search(r"Language:\s+([a-zA-Z-]+)", en_tete, flags=re.IGNORECASE)
+        
+        if match:
+            return match.group(1).strip()
+        
+        return "English"
+        
+    except ValueError as e:
+        print("Impossible de lire la langue dans {path_file}: {e}")
+        return 
     
 def cleaner(tokens):
     return [word.lower() for word in tokens if word not in string.punctuation]

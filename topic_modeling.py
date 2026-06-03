@@ -9,7 +9,7 @@ def section_cuter(book_id):
     return sections
 
 def topic (book_id, action = "topics"):
-
+    path_book = f"Data/Books/{book_id}_book.txt"
     # cache_topics = cache.charge_cache(book_id, "topics")
     
     # if cache_topics is not None:
@@ -21,11 +21,11 @@ def topic (book_id, action = "topics"):
     tools.setup_action(book_id, action)
 
     sections= section_cuter(book_id)
-
+    lang = tools.get_book_language(path_book).lower()
     vectorizer = TfidfVectorizer(
         # tokenizer=tools.get_token, 
         # lowercase=False, 
-        stop_words='english',
+        stop_words=lang,
         max_features=3000
     )
     
