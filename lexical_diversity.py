@@ -1,6 +1,8 @@
+import cache
 import tools
 
 from nltk import FreqDist
+
 
 def number_of_word_tokens(tokens):
     """Return the number of word tokens in the book."""
@@ -31,11 +33,16 @@ def ratio_of_word_tokens_to_unique_word_tokens(tokens):
     ratio = number_of_word_tokens(tokens) / number_of_unique_word_tokens(tokens)
     return ratio
 
-def get_lexical_diversity(book_id):
+def get_lexical_diversity(book_id, action="lexdiv"):
     """Return the lexical diversity of a book."""
+    cached = tools.setup_action(book_id, action)
+
+    if cached is not None:
+        return cached
+
     tokens = tools.get_tokens(book_id)
 
-    return {
+    result = {
         "tok": int(number_of_word_tokens(tokens)),
         "typ": int(number_of_unique_word_tokens(tokens)),
         "hap": int(number_of_tokens_occurring_once(tokens)),
@@ -43,3 +50,6 @@ def get_lexical_diversity(book_id):
         "mwl": float(average_word_length(tokens)),
         "mwf": float(ratio_of_word_tokens_to_unique_word_tokens(tokens))
     }
+
+    cache.save_cache(book_id, action, result)
+    return result

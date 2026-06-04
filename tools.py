@@ -1,6 +1,6 @@
 import string, re, urllib.request ,os
-from nltk import word_tokenize
-import tools, cache
+from nltk import sent_tokenize, word_tokenize
+import cache
 
 url= "https://www.gutenberg.org/ebooks/"
 url_end=".txt.utf-8"
@@ -74,8 +74,13 @@ def setup_action(book_id, action):
         return cache_action
    
    if not cache.book_in_cache(book_id):
-        
-        tools.download_book(book_id)
+        download_book(book_id)
+
+def get_book_file(book_id):
+    return f"{book_id}_book.txt"
+
+def get_path_file(book_file):
+    return os.path.join("Data/Books", book_file)
    
 def get_tokens(book_id):
     book_file = f"{book_id}_book.txt"
@@ -83,3 +88,11 @@ def get_tokens(book_id):
     
     cleaned_tokens = cleaner(path_file)
     return cleaned_tokens
+
+def get_sentences(book_id):
+    book_file = get_book_file(book_id)
+    path_file = get_path_file(book_file)
+    book_content_cleaned = header_and_footer_remover(path_file)
+    sentences = sent_tokenize(book_content_cleaned)
+
+    return sentences
