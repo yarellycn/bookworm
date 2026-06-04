@@ -33,7 +33,7 @@ def cli():
         return
 
     elif args.topics:
-        topic.topic(args.ask[0])
+        print(topic.topic(args.ask[0]))
         return
 
     elif args.entities:
@@ -41,13 +41,12 @@ def cli():
         return
 
     elif args.summarize:
-        summarize.summarize_book(args.ask[0])
+        print(summarize.summarize_book(args.ask[0]))
         return
 
     elif args.similar:
-        similar.similar_books(args.ask[0])
-
-        return
+       print(similar.similar_books(args.ask[0]))
+       return
 
     elif args.card:
         return

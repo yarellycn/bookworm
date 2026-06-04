@@ -2,14 +2,14 @@ import re, tools, cache
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 def section_cuter(book_id):
-    path_book = f"Data/Books/{book_id}_book.txt"
+    path_book = tools.get_path_file(tools.get_book_file(book_id))
     book = tools.header_and_footer_remover(path_book)
     section_brut = re.split(r'CHAPTER\s+[IVXLCDM\d]+|Chapter\s+\d+', book, flags=re.IGNORECASE)
     sections = [s.strip() for s in section_brut if len(s.strip()) > 100]
     return sections
 
 def topic (book_id, action = "topics"):
-    path_book = f"Data/Books/{book_id}_book.txt"
+    path_book = tools.get_path_file(tools.get_book_file(book_id))
 
     cached = tools.setup_action(book_id, action)
 
@@ -43,7 +43,6 @@ def topic (book_id, action = "topics"):
         dictionnaire_final[str(index_section + 1)] = top_10_mots
 
     cache.save_cache(book_id, action, dictionnaire_final)
-    print(dictionnaire_final)
     return dictionnaire_final
 
 

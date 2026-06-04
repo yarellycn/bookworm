@@ -10,7 +10,7 @@ def download_book(book_id):
    try :
     url_final = f"{url}{book_id}{url_end}"
     name_file = f"{book_id}_book.txt"
-    book_folder = "Data/Books"
+    book_folder = "data/books"
     path_file= os.path.join(book_folder,name_file)
     urllib.request.urlretrieve(url_final,path_file)
     print(f"Fichier {name_file} correctement téléchargé")
@@ -80,11 +80,11 @@ def get_book_file(book_id):
     return f"{book_id}_book.txt"
 
 def get_path_file(book_file):
-    return os.path.join("Data/Books", book_file)
+        return f"data/books/{book_file}"
    
 def get_tokens(book_id):
     book_file = f"{book_id}_book.txt"
-    path_file = os.path.join("Data/Books", book_file)
+    path_file = os.path.join("data/books", book_file)
     
     cleaned_tokens = cleaner(path_file)
     return cleaned_tokens

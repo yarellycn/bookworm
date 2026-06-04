@@ -1,7 +1,7 @@
 import os, json
 
-FOLDER_CACHE = "Data/Cache"
-FOLDER_BOOK= "Data/Books"
+FOLDER_CACHE = "data/cache"
+FOLDER_BOOK= "data/books"
 
 def book_in_cache(book_id): 
     name_file = f"{book_id}_book.txt"

@@ -4,8 +4,12 @@ from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.text_rank import TextRankSummarizer
 
 def summarize_book(book_id, sentence_count=4):
-    tools.setup_action(book_id,action="summarize")
-    path_book = f"Data/Books/{book_id}_book.txt"
+    cached = tools.setup_action(book_id,action="summarize")
+
+    if cached is not None:
+        return cached
+        
+    path_book = tools.get_path_file(tools.get_book_file(book_id))
     lang = tools.get_book_language(path_book)
     text= tools.header_and_footer_remover(path_book)
 

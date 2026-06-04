@@ -38,7 +38,8 @@ def similar_books(id_ask, top=5):
     corpus = []
     book_ids = []
     for book_id in BOOK_COLLECTION.keys():
-        path_book = f"Data/Books/{book_id}_book.txt"
+
+        path_book = tools.get_path_file(tools.get_book_file(id_ask))
         
         if not os.path.exists(path_book):
             tools.download_book(book_id)
