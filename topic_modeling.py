@@ -2,8 +2,10 @@ import re, tools, cache
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 def section_cuter(book_id):
+    """ Cut each Chapter and return it in tuple"""
     path_book = tools.get_path_file(tools.get_book_file(book_id))
     book = tools.header_and_footer_remover(path_book)
+    # Split avec regex pour chapter et ignore des type maj,min assemblé.
     section_brut = re.split(r'CHAPTER\s+[IVXLCDM\d]+|Chapter\s+\d+', book, flags=re.IGNORECASE)
     sections = [s.strip() for s in section_brut if len(s.strip()) > 100]
     return sections

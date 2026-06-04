@@ -3,6 +3,7 @@ import topic_modeling as topic
 import summarize, similar 
 import lexical_diversity as lexdiv
 import entities
+from nltk.stem import PorterStemmer, WordNetLemmatizer
 
 main_file = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if main_file not in sys.path:

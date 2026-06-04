@@ -1,0 +1,52 @@
+import string, re
+# from nltk.stem import PorterStemmer, WordNetLemmatizer
+# from nltk.tokenize import word_tokenize, sent_tokenize
+# from nltk.tag import pos_tag
+from nltk.corpus import stopwords
+
+class own_Tokenizer():
+
+    def __init__(self, data, lang= "english"):
+        self.data= data
+        self.lang= lang.lower()
+        pass
+
+    def tok_word_brut(self, lower= False):
+        if not self.data :
+            return []
+        if lower :
+           data = self.data.lower(self)
+           return re.findall(r'\w+', data) 
+        return re.findall(r'\w+', data) 
+    
+    def tok_sentence_brut(self, lower= False):
+
+        if not self.data :
+            return []
+        if lower:
+            data = self.data.lower()
+            return re.split(r'(?<=[.!?])\s+', data) 
+        return re.split(r'(?<=[.!?])\s+', data) 
+
+    
+    def remover_stopword(self,tokens ):
+        removed = []
+        for token in tokens :
+            if token.lower() in stopwords.words(self.lang):
+                continue
+            removed.append(token)
+        return removed
+        
+
+    def tokenize(self, sentence= False, punct = True, lower=False ,stopword=True):
+        
+        liste_stopwords= set(stopwords.words("english"))
+        liste_ponctuation = set(string.punctuation)
+        
+        if sentence :
+            tokens = self.tok_sentence_brut(self.data, lower)
+        else :
+            tokens = self.tok_word_brut(self.data, lower)
+        
+        if stopword:
+            self.remover_stopword(tokens= tokens)

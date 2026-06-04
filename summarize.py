@@ -6,7 +6,7 @@ from sumy.summarizers.text_rank import TextRankSummarizer
 def summarize_book(book_id, sentence_count=4):
     cached = tools.setup_action(book_id,action="summarize")
 
-    if cached is not None:
+    if cached is not None: 
         return cached
         
     path_book = tools.get_path_file(tools.get_book_file(book_id))
