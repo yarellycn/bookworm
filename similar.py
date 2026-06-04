@@ -26,6 +26,11 @@ BOOK_COLLECTION = {"11": "Alice's Adventures in Wonderland",
 
 def similar_books(id_ask, top=5):
 
+    cached = tools.setup_action(id_ask,"similar")
+
+    if cached is not None:
+        return cached
+
     if id_ask not in BOOK_COLLECTION:
         print(" L'id livre n'est pas dan la collection")
         return []
@@ -67,7 +72,7 @@ def similar_books(id_ask, top=5):
     
     print(f" Si vous avez lu {BOOK_COLLECTION[id_ask]} , vous devriez aimer : ")
     print(reco_list)
-    cache.charge_cache(id_ask,"similar")
+    cache.save_cache(id_ask,"similar", reco_list)
     return reco_list
         
 
