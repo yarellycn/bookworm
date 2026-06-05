@@ -5,6 +5,7 @@ import string, re
 from nltk.corpus import stopwords
 
 class own_Tokenizer():
+    """ This class is for tokenize , you can fin many option for cut your text in words ou sentence and removed usless word or punctuation"""
 
     def __init__(self, data, lang= "english"):
         self.data= data
@@ -28,7 +29,6 @@ class own_Tokenizer():
             return re.split(r'(?<=[.!?])\s+', data) 
         return re.split(r'(?<=[.!?])\s+', data) 
 
-    
     def remover_stopword(self,tokens ):
         removed = []
         for token in tokens :
@@ -36,13 +36,17 @@ class own_Tokenizer():
                 continue
             removed.append(token)
         return removed
-        
+
+    def remover_punctuation (self, tokens):
+        removed = []
+        for token in tokens :
+            if token in string.punctuation:
+                continue
+            removed.append(token)
+        return removed
 
     def tokenize(self, sentence= False, punct = True, lower=False ,stopword=True):
-        
-        liste_stopwords= set(stopwords.words("english"))
-        liste_ponctuation = set(string.punctuation)
-        
+                
         if sentence :
             tokens = self.tok_sentence_brut(self.data, lower)
         else :
@@ -50,3 +54,6 @@ class own_Tokenizer():
         
         if stopword:
             self.remover_stopword(tokens= tokens)
+        
+        if punct:
+            self.remover_punctuation(tokens=tokens)

@@ -1,15 +1,40 @@
-import argparse, sys, os
+import argparse
 import topic_modeling as topic
 import summarize, similar 
 import lexical_diversity as lexdiv
 import entities
-from nltk.stem import PorterStemmer, WordNetLemmatizer
 
-main_file = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-if main_file not in sys.path:
-    sys.path.append(main_file)
+# main_file = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+# if main_file not in sys.path:
+#     sys.path.append(main_file)
 
-import tools
+
+def run_bookworm(action_type, target):
+    """ Function for notebook interface """
+
+    if action_type == "lexdiv":
+        return lexdiv.get_lexical_diversity(int(target))
+
+    elif action_type == "topics":
+        return topic.topic(target)
+
+    elif action_type == "entities":
+        return entities.get_entities(int(target))
+
+    elif action_type == "summarize":
+        return summarize.summarize_book(target)
+
+    elif action_type == "similar":
+        return similar.similar_books(target)
+
+    # elif action_type == "card":
+    #     return "Card logic"
+        
+    else:
+        raise ValueError("Action {action_type} inconnue")
+
+
+
 
 
 def cli():
