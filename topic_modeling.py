@@ -1,5 +1,6 @@
 import re, tools, cache
 from sklearn.feature_extraction.text import TfidfVectorizer
+import own_Tokenizer as own_Tok
 
 def section_cuter(book_id):
     """ Cut each Chapter and return it in tuple"""
@@ -7,6 +8,9 @@ def section_cuter(book_id):
     book = tools.header_and_footer_remover(path_book)
     # Split avec regex pour chapter et ignore des type maj,min assemblé.
     section_brut = re.split(r'CHAPTER\s+[IVXLCDM\d]+|Chapter\s+\d+', book, flags=re.IGNORECASE)
+    #supression du sommaire
+    section_brut= section_brut[1:]
+    # Mise en place du len pour suprimer les mini decoupe du sommaire 
     sections = [s.strip() for s in section_brut if len(s.strip()) > 100]
     return sections
 
@@ -20,6 +24,9 @@ def topic (book_id, action = "topics"):
 
     sections= section_cuter(book_id)
     lang = tools.get_book_language(path_book).lower()
+
+    super_tok = own_Tok.OwnTokenizer(data=cached, lang= lang)
+ 
     vectorizer = TfidfVectorizer(
         # tokenizer=tools.get_token, 
         # lowercase=False, 
