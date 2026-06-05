@@ -72,7 +72,6 @@ def similar_books(id_ask, top=5):
             break
     
     print(f" Si vous avez lu {BOOK_COLLECTION[id_ask]} , vous devriez aimer : ")
-    print(reco_list)
     cache.save_cache(id_ask,"similar", reco_list)
     return reco_list
         

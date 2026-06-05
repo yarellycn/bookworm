@@ -21,5 +21,4 @@ def summarize_book(book_id, sentence_count=4):
     chrono_sentences = sorted(sentence_string, key=lambda s : text.find(s))
     summary_string = " ".join(chrono_sentences)
     cache.save_cache(book_id, task="summarize",data=summary_string)
-    print(summary_string)
-
+    return summary_string
