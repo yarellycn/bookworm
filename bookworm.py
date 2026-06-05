@@ -3,6 +3,7 @@ import topic_modeling as topic
 import summarize, similar 
 import lexical_diversity as lexdiv
 import entities
+import card
 
 # main_file = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 # if main_file not in sys.path:
@@ -47,7 +48,7 @@ def cli():
     groupe.add_argument("--entities", type=int)
     groupe.add_argument("--summarize", action="store_true")
     groupe.add_argument("--similar", action="store_true")
-    groupe.add_argument("--card", action="store_true")
+    groupe.add_argument("--card", type=int)
 
     parser.add_argument("ask", type=str, nargs="*")
 
@@ -75,6 +76,7 @@ def cli():
        return
 
     elif args.card:
+        print(card.get_book_card(args.card))
         return
     
 
