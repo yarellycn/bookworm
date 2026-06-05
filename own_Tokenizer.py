@@ -1,16 +1,16 @@
 import string, re
-# from nltk.stem import PorterStemmer, WordNetLemmatizer
-# from nltk.tokenize import word_tokenize, sent_tokenize
+from nltk.stem import PorterStemmer, WordNetLemmatizer
 # from nltk.tag import pos_tag
 from nltk.corpus import stopwords
 
-class own_Tokenizer():
+class OwnTokenizer():
     """ This class is for tokenize , you can fin many option for cut your text in words ou sentence and removed usless word or punctuation"""
 
     def __init__(self, data, lang= "english"):
         self.data= data
         self.lang= lang.lower()
-        pass
+        self.stop_words= set(stopwords.words(self.lang))
+
 
     def tok_word_brut(self, lower= False):
         if not self.data :
@@ -30,22 +30,20 @@ class own_Tokenizer():
         return re.split(r'(?<=[.!?])\s+', data) 
 
     def remover_stopword(self,tokens ):
-        removed = []
-        for token in tokens :
-            if token.lower() in stopwords.words(self.lang):
-                continue
-            removed.append(token)
-        return removed
+        return [token for token in tokens if token not in self.stop_words]
 
     def remover_punctuation (self, tokens):
-        removed = []
-        for token in tokens :
-            if token in string.punctuation:
-                continue
-            removed.append(token)
-        return removed
+        return [token for token in tokens if token not in string.punctuation]
+    
+    def normalize(self , tokens, method=None):
+        if method == "stem":
+            return [self.stemmer.stem(tokens) for token in tokens]
+        if method == "lemma":
+            return [self.stemmer.lemmatize(token) for token in tokens]
+        return tokens
 
-    def tokenize(self, sentence= False, punct = True, lower=False ,stopword=True):
+    def tokenize(self, sentence= False, punct = True, lower=False ,stopword=True , normalization=None):
+        """ Select your custome tokenize """
                 
         if sentence :
             tokens = self.tok_sentence_brut(self.data, lower)
@@ -53,7 +51,12 @@ class own_Tokenizer():
             tokens = self.tok_word_brut(self.data, lower)
         
         if stopword:
-            self.remover_stopword(tokens= tokens)
+            tokens =self.remover_stopword(tokens= tokens)
         
         if punct:
-            self.remover_punctuation(tokens=tokens)
+            tokens= self.remover_punctuation(tokens=tokens)
+        
+        if normalization and not sentence:
+            tokens = self.normalize(tokens=tokens, method=normalization)
+
+        return tokens
