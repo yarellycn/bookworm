@@ -31,7 +31,7 @@ def is_valid_entity(name):
 
     return True
 
-def get_entities_nltk(book_id, action="entitiesnltk"):
+def get_entities(book_id, action="entities"):
     cached = tools.setup_action(book_id, action)
 
     if cached is not None:
@@ -65,7 +65,7 @@ def get_entities_nltk(book_id, action="entitiesnltk"):
     cache.save_cache(book_id, action, result)
     return result
 
-def get_entities(book_id, action="entities"):
+def get_entities_(book_id, action="entitiesdd"):
     cached = tools.setup_action(book_id, action)
 
     if cached is not None:

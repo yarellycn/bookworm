@@ -1,6 +1,5 @@
 import string, re
 from nltk.stem import PorterStemmer, WordNetLemmatizer
-# from nltk.tag import pos_tag
 from nltk.corpus import stopwords
 
 class OwnTokenizer():
@@ -10,23 +9,23 @@ class OwnTokenizer():
         self.data= data
         self.lang= lang.lower()
         self.stop_words= set(stopwords.words(self.lang))
+        self.stemmer=PorterStemmer()
+        self.lemmatizer = WordNetLemmatizer()
 
 
     def tok_word_brut(self, lower= False):
         if not self.data :
             return []
-        if lower :
-           data = self.data.lower(self)
-           return re.findall(r'\w+', data) 
+        
+        data = self.data.lower() if lower else self.data
         return re.findall(r'\w+', data) 
     
     def tok_sentence_brut(self, lower= False):
 
         if not self.data :
             return []
-        if lower:
-            data = self.data.lower()
-            return re.split(r'(?<=[.!?])\s+', data) 
+        
+        data = self.data.lower()if lower else self.data
         return re.split(r'(?<=[.!?])\s+', data) 
 
     def remover_stopword(self,tokens ):
@@ -37,7 +36,7 @@ class OwnTokenizer():
     
     def normalize(self , tokens, method=None):
         if method == "stem":
-            return [self.stemmer.stem(tokens) for token in tokens]
+            return [self.stemmer.stem(token) for token in tokens]
         if method == "lemma":
             return [self.stemmer.lemmatize(token) for token in tokens]
         return tokens
@@ -46,9 +45,9 @@ class OwnTokenizer():
         """ Select your custome tokenize """
                 
         if sentence :
-            tokens = self.tok_sentence_brut(self.data, lower)
+            tokens = self.tok_sentence_brut(lower)
         else :
-            tokens = self.tok_word_brut(self.data, lower)
+            tokens = self.tok_word_brut(lower)
         
         if stopword:
             tokens =self.remover_stopword(tokens= tokens)

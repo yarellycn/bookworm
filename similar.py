@@ -1,8 +1,10 @@
 import tools, cache, os
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+import own_Tokenizer, own_tfidf
 
-BOOK_COLLECTION = {"11": "Alice's Adventures in Wonderland",
+BOOK_COLLECTION = {
+    "11": "Alice's Adventures in Wonderland",
     "12": "Through the Looking-Glass",
     "16": "Peter Pan",
     "55": "The Wonderful Wizard of Oz",
@@ -24,7 +26,8 @@ BOOK_COLLECTION = {"11": "Alice's Adventures in Wonderland",
     "345": "Dracula", "68283": "The call of Cthulhu"
 }
 
-def similar_books(id_ask, top=5):
+def similar_books(id_ask, top=5 , ownCooking= False):
+    id_ask=str(id_ask)
 
     cached = tools.setup_action(id_ask,"similar")
 
@@ -39,7 +42,7 @@ def similar_books(id_ask, top=5):
     book_ids = []
     for book_id in BOOK_COLLECTION.keys():
 
-        path_book = tools.get_path_file(tools.get_book_file(id_ask))
+        path_book = tools.get_path_file(tools.get_book_file(book_id)) ### A check 
         
         if not os.path.exists(path_book):
             tools.download_book(book_id)
@@ -49,11 +52,25 @@ def similar_books(id_ask, top=5):
         corpus.append(book)
         book_ids.append(book_id)
 
-    
-    vectorizer = TfidfVectorizer(stop_words=lang,max_features=3000)
-    tfidf_matrix = vectorizer.fit_transform(corpus)
+    if ownCooking :
+        #version maison 
+        corpus_tokens = []
+        for book_text in corpus:
 
-    matrix_similar = cosine_similarity(tfidf_matrix)
+            tokenize = own_Tokenizer.OwnTokenizer(data=book_text,lang=lang)
+            tokens  =tokenize.tokenize(sentence=False,punct=True, stopword=True, lower=True)
+            corpus_tokens.append(tokens)
+        
+        tfidf=own_tfidf.OwnTfidf()
+        tfidf_matrix = tfidf.fit(corpus_tokens)
+
+        matrix_similar= cosine_similarity(tfidf_matrix)
+
+    else:
+        #Version de la bibli
+        vectorizer = TfidfVectorizer(stop_words=lang,max_features=3000)
+        tfidf_matrix = vectorizer.fit_transform(corpus)
+        matrix_similar = cosine_similarity(tfidf_matrix)
 
     target_index = book_ids.index(id_ask)
 

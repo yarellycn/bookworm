@@ -10,7 +10,7 @@ import card
 #     sys.path.append(main_file)
 
 
-def run_bookworm(action_type, target):
+def run_bookworm(action_type, target, own=False):
     """ Function for notebook interface """
 
     if action_type == "lexdiv":
@@ -26,7 +26,7 @@ def run_bookworm(action_type, target):
         return summarize.summarize_book(target)
 
     elif action_type == "similar":
-        return similar.similar_books(target)
+        return similar.similar_books(target,ownCooking=own)
 
     # elif action_type == "card":
     #     return "Card logic"
