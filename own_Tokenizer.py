@@ -38,7 +38,7 @@ class OwnTokenizer():
         if method == "stem":
             return [self.stemmer.stem(token) for token in tokens]
         if method == "lemma":
-            return [self.stemmer.lemmatize(token) for token in tokens]
+            return [self.stemmer.lemmatizer(token) for token in tokens]
         return tokens
 
     def tokenize(self, sentence= False, punct = True, lower=False ,stopword=True , normalization=None):
