@@ -66,9 +66,9 @@ def cleaner(file_path):
     tokens = word_tokenize(text)
     return [word.lower() for word in tokens if word not in string.punctuation]
 
-def setup_action(book_id, action):
+def setup_action(book_id, action, tagName= None):
    
-   cache_action = cache.charge_cache(book_id, action)
+   cache_action = cache.charge_cache(book_id, action,tagName=tagName)
    
    if cache_action is not None:
         return cache_action

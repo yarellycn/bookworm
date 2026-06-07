@@ -28,8 +28,13 @@ BOOK_COLLECTION = {
 
 def similar_books(id_ask, top=5 , ownCooking= False):
     id_ask=str(id_ask)
-
-    cached = tools.setup_action(id_ask,"similar")
+    if ownCooking==True:
+        tagName="own"
+    else :
+        tagName=None
+    
+    
+    cached = tools.setup_action(id_ask,"similar",tagName=tagName)
 
     if cached is not None:
         return cached
@@ -55,6 +60,7 @@ def similar_books(id_ask, top=5 , ownCooking= False):
     if ownCooking :
         #version maison 
         corpus_tokens = []
+        
         for book_text in corpus:
 
             tokenize = own_Tokenizer.OwnTokenizer(data=book_text,lang=lang)
@@ -89,7 +95,8 @@ def similar_books(id_ask, top=5 , ownCooking= False):
             break
     
     print(f" Si vous avez lu {BOOK_COLLECTION[id_ask]} , vous devriez aimer : ")
-    cache.save_cache(id_ask,"similar", reco_list)
+    
+    cache.save_cache(id_ask,"similar", reco_list , tagName=tagName)
     return reco_list
         
 

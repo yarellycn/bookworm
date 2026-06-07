@@ -14,7 +14,7 @@ def section_cuter(book_id):
     sections = [s.strip() for s in section_brut if len(s.strip()) > 100]
     return sections
 
-def topic (book_id, action = "topics"):
+def topic (book_id,own=False ,action = "topics"):
     path_book = tools.get_path_file(tools.get_book_file(book_id))
 
     cached = tools.setup_action(book_id, action)

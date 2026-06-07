@@ -44,15 +44,17 @@ def cli():
 
     groupe = parser.add_mutually_exclusive_group(required=True)
     groupe.add_argument("--lexdiv", type=int)
-    groupe.add_argument("--topics", action="store_true")
+    groupe.add_argument("--topics", type=int)
     groupe.add_argument("--entities", type=int)
-    groupe.add_argument("--summarize", action="store_true")
-    groupe.add_argument("--similar", action="store_true")
+    groupe.add_argument("--summarize",type=int)
+    groupe.add_argument("--similar", type=int)
     groupe.add_argument("--card", type=int)
 
+    parser.add_argument("--own",action="store_true")
     parser.add_argument("ask", type=str, nargs="*")
-
+    
     args = parser.parse_args()
+
 
 
     if args.lexdiv:
@@ -60,7 +62,10 @@ def cli():
         return
 
     elif args.topics:
-        print(topic.topic(args.ask[0]))
+        if args.own==True:
+            print(topic.topic(args.topics, own=args.own))
+        else: 
+            print(topic.topic(args.topics))
         return
 
     elif args.entities:
@@ -68,12 +73,15 @@ def cli():
         return
 
     elif args.summarize:
-        print(summarize.summarize_book(args.ask[0]))
+        print(summarize.summarize_book(args.summarize))
         return
 
     elif args.similar:
-       print(similar.similar_books(args.ask[0]))
-       return
+        if args.own==True:
+           print(similar.similar_books(args.similar, ownCooking=args.own))
+        else:
+            print(similar.similar_books(args.similar))
+        return
 
     elif args.card:
         print(card.get_book_card(args.card))
