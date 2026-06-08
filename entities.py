@@ -81,8 +81,7 @@ def get_entities_spacy(book_id, action="spacy"):
     if cached is not None:
         return cached
     
-    book_file = tools.get_book_file(book_id)
-    path_file = tools.get_path_file(book_file)
+    path_file = tools.get_path_file(book_id)
     text = tools.header_and_footer_remover(path_file)
 
     doc = nlp(text)

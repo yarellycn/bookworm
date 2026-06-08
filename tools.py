@@ -1,40 +1,52 @@
-import string, re, urllib.request ,os
+import sys
+import string, re, urllib.request, os
 from nltk import sent_tokenize, word_tokenize
 import cache
 
-url= "https://www.gutenberg.org/ebooks/"
-url_end=".txt.utf-8"
+url = "https://www.gutenberg.org/ebooks/"
+url_end = ".txt.utf-8"
 
 
 def download_book(book_id):
-   try :
-    url_final = f"{url}{book_id}{url_end}"
-    name_file = f"{book_id}_book.txt"
-    book_folder = "data/books"
-    path_file= os.path.join(book_folder,name_file)
-    urllib.request.urlretrieve(url_final,path_file)
-    print(f"Fichier {name_file} correctement téléchargé")
-    return path_file
-   except:
-      print(f"Erreur lors du telechargement de {book_id}")
+    try:
+        url_final = f"{url}{book_id}{url_end}"
+        name_file = f"{book_id}_book.txt"
+        book_folder = "data/books"
+        path_file = os.path.join(book_folder, name_file)
+        urllib.request.urlretrieve(url_final, path_file)
+        print(f"Fichier {name_file} correctement téléchargé")
+        return path_file
+    except:
+        print(f"This book id ({book_id}) does not exist. Try again with another number.")
+        # sys.exit()
+
 
 def read_text_file(filename):
     with open(filename, "r", encoding="utf-8") as file:
         return file.read()
-    
+
+
 def header_and_footer_remover(path_file):
     """Clean the start and end balise of Gutenberg projet"""
     data = read_text_file(path_file)
 
-    start_match = re.search(r"\*\*\*\s*START OF THE PROJECT GUTENBERG EBOOK.*?\*\*\*", data, flags=re.IGNORECASE)
-    end_match = re.search(r"\*\*\*\s*END OF THE PROJECT GUTENBERG EBOOK.*?\*\*\*", data, flags=re.IGNORECASE)
+    start_match = re.search(
+        r"\*\*\*\s*START OF THE PROJECT GUTENBERG EBOOK.*?\*\*\*",
+        data,
+        flags=re.IGNORECASE,
+    )
+    end_match = re.search(
+        r"\*\*\*\s*END OF THE PROJECT GUTENBERG EBOOK.*?\*\*\*",
+        data,
+        flags=re.IGNORECASE,
+    )
     if start_match and end_match:
-        index_debut = start_match.end() 
-        index_fin = end_match.start() 
+        index_debut = start_match.end()
+        index_fin = end_match.start()
         texte = data[index_debut:index_fin]
         # print (texte)
         return texte.strip()
-    
+
     print(f" Balises de début/fin non détectées dans {path_file} !")
     return data.strip()
 
@@ -44,54 +56,63 @@ def get_book_language(path_file):
         with open(path_file, "r", encoding="utf-8") as file:
             data = file.read()
         # on prend les donné avant la balise start
-        start_match = re.search(r"\*\*\*\s*START OF THE PROJECT GUTENBERG EBOOK.*?\*\*\*", data, flags=re.IGNORECASE)
-        
+        start_match = re.search(
+            r"\*\*\*\s*START OF THE PROJECT GUTENBERG EBOOK.*?\*\*\*",
+            data,
+            flags=re.IGNORECASE,
+        )
+
         if start_match:
-            en_tete = data[:start_match.start()]
+            en_tete = data[: start_match.start()]
         else:
             en_tete = data
         match = re.search(r"Language:\s+([a-zA-Z-]+)", en_tete, flags=re.IGNORECASE)
-        
+
         if match:
             return match.group(1).strip().lower()
-        
+
         return "english"
-        
+
     except ValueError as e:
         print("Impossible de lire la langue dans {path_file}: {e}")
-        return 
-    
+        return
+
+
 def cleaner(file_path):
     text = header_and_footer_remover(file_path)
     tokens = word_tokenize(text)
     return [word.lower() for word in tokens if word not in string.punctuation]
 
-def setup_action(book_id, action, tagName= None):
-   
-   cache_action = cache.charge_cache(book_id, action,tagName=tagName)
-   
-   if cache_action is not None:
+
+def setup_action(book_id, action, tagName=None):
+
+    cache_action = cache.charge_cache(book_id, action, tagName=tagName)
+
+    if cache_action is not None:
         return cache_action
-   
-   if not cache.book_in_cache(book_id):
+
+    if not cache.book_in_cache(book_id):
         download_book(book_id)
+
 
 def get_book_file(book_id):
     return f"{book_id}_book.txt"
 
-def get_path_file(book_file):
-        return f"data/books/{book_file}"
-   
+
+def get_path_file(book_id):
+    book_file = get_book_file(book_id)
+    return f"data/books/{book_file}"
+
+
 def get_tokens(book_id):
-    book_file = f"{book_id}_book.txt"
-    path_file = os.path.join("data/books", book_file)
-    
+    path_file = get_path_file(book_id)
+
     cleaned_tokens = cleaner(path_file)
     return cleaned_tokens
 
+
 def get_sentences(book_id):
-    book_file = get_book_file(book_id)
-    path_file = get_path_file(book_file)
+    path_file = get_path_file(book_id)
     book_content_cleaned = header_and_footer_remover(path_file)
     sentences = sent_tokenize(book_content_cleaned)
 

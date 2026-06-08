@@ -1,4 +1,7 @@
 import argparse
+import os
+from cache import book_in_cache
+from tools import download_book, get_path_file
 import topic_modeling as topic
 import summarize
 import similar
@@ -6,13 +9,44 @@ import lexical_diversity as lexdiv
 import entities
 import card
 
-# main_file = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-# if main_file not in sys.path:
-#     sys.path.append(main_file)
+VALID_ACTIONS = {"lexdiv", "topics", "entities", "summarize", "similar", "card"}
 
 
-def run_bookworm(action_type, book_id, own=False):
-    """ Function for notebook interface """
+def validate_book_id(book_id):
+    try:
+        book_id = int(book_id)
+    except ValueError:
+        raise ValueError("Book id must be an integrer.")
+
+    if book_id <= 0:
+        raise ValueError("Book id must be positive.")
+
+    return book_id
+
+
+def prepare_book(book_id):
+    book_id = validate_book_id(book_id)
+    book_path = get_path_file(book_id)
+
+    if not book_in_cache(book_id):
+        download_book(book_id)
+
+    if not os.path.exists(book_path):
+        raise ValueError(
+            f"This book id ({book_id}) does not exist. Try again with another number."
+        )
+
+    return book_id
+
+
+def execute_action(action_type, book_id, own=False):
+    """Function for notebook interface"""
+
+    if action_type not in VALID_ACTIONS:
+        raise ValueError(f"Unknown action: {action_type}")
+
+    book_id = prepare_book(book_id)
+    # book_id = validate_book_id(book_id)
 
     if action_type == "lexdiv":
         return lexdiv.get_lexical_diversity(book_id)
@@ -32,6 +66,7 @@ def run_bookworm(action_type, book_id, own=False):
     elif action_type == "card":
         return card.get_book_card(book_id)
 
+
 def cli():
     parser = argparse.ArgumentParser(description="Etude de livre")
 
@@ -39,44 +74,48 @@ def cli():
     groupe.add_argument("--lexdiv", type=int)
     groupe.add_argument("--topics", type=int)
     groupe.add_argument("--entities", type=int)
-    groupe.add_argument("--summarize",type=int)
+    groupe.add_argument("--summarize", type=int)
     groupe.add_argument("--similar", type=int)
     groupe.add_argument("--card", type=int)
 
-    parser.add_argument("--own",action="store_true")
+    parser.add_argument("--own", action="store_true")
     parser.add_argument("ask", type=str, nargs="*")
 
     args = parser.parse_args()
 
     if args.lexdiv:
-        print(lexdiv.get_lexical_diversity(args.lexdiv))
+        print(execute_action("lexdiv", args.lexdiv))
         return
 
     elif args.topics:
-        print(topic.topic(args.topics, own=args.own))
+        print(execute_action("topics", args.topics, own=args.own))
         return
 
     elif args.entities:
-        print(entities.get_entities(args.entities))
+        print(execute_action("entities", args.entities))
         return
 
     elif args.summarize:
-        print(summarize.summarize_book(args.summarize))
+        print(execute_action("summarize", args.summarize))
         return
 
     elif args.similar:
-        print(similar.similar_books(args.similar, ownCooking=args.own))
+        print(execute_action("similar", args.similar, ownCooking=args.own))
         return
 
     elif args.card:
-        print(card.get_book_card(args.card))
+        print(execute_action("card", args.card))
         return
 
+
 if __name__ == "__main__":
-    cli()
+    try:
+        cli()
+    except ValueError as e:
+        print(e)
 
-# if book_id is None:
-#     raise ValueError("Please specify a book id.")
+    # if book_id is None:
+    #     raise ValueError("Please specify a book id.")
 
-# if (book_id <= 0) or not isinstance(book_id, int):
-#     raise ValueError("book_id incorrect.")
+    # if (book_id <= 0) or not isinstance(book_id, int):
+    #     raise ValueError("book_id incorrect.")
