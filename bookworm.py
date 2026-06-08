@@ -1,6 +1,7 @@
 import argparse
 import topic_modeling as topic
-import summarize, similar 
+import summarize
+import similar
 import lexical_diversity as lexdiv
 import entities
 import card
@@ -10,36 +11,28 @@ import card
 #     sys.path.append(main_file)
 
 
-def run_bookworm(action_type, target, own=False):
+def run_bookworm(action_type, book_id, own=False):
     """ Function for notebook interface """
 
     if action_type == "lexdiv":
-        return lexdiv.get_lexical_diversity(int(target))
+        return lexdiv.get_lexical_diversity(book_id)
 
     elif action_type == "topics":
-        return topic.topic(target)
+        return topic.topic(book_id)
 
     elif action_type == "entities":
-        return entities.get_entities(int(target))
+        return entities.get_entities(book_id)
 
     elif action_type == "summarize":
-        return summarize.summarize_book(target)
+        return summarize.summarize_book(book_id)
 
     elif action_type == "similar":
-        return similar.similar_books(target,ownCooking=own)
+        return similar.similar_books(book_id, ownCooking=own)
 
-    # elif action_type == "card":
-    #     return "Card logic"
-        
-    else:
-        raise ValueError("Action {action_type} inconnue")
-
-
-
-
+    elif action_type == "card":
+        return card.get_book_card(book_id)
 
 def cli():
-
     parser = argparse.ArgumentParser(description="Etude de livre")
 
     groupe = parser.add_mutually_exclusive_group(required=True)
@@ -52,20 +45,15 @@ def cli():
 
     parser.add_argument("--own",action="store_true")
     parser.add_argument("ask", type=str, nargs="*")
-    
+
     args = parser.parse_args()
-
-
 
     if args.lexdiv:
         print(lexdiv.get_lexical_diversity(args.lexdiv))
         return
 
     elif args.topics:
-        if args.own==True:
-            print(topic.topic(args.topics, own=args.own))
-        else: 
-            print(topic.topic(args.topics))
+        print(topic.topic(args.topics, own=args.own))
         return
 
     elif args.entities:
@@ -77,16 +65,12 @@ def cli():
         return
 
     elif args.similar:
-        if args.own==True:
-           print(similar.similar_books(args.similar, ownCooking=args.own))
-        else:
-            print(similar.similar_books(args.similar))
+        print(similar.similar_books(args.similar, ownCooking=args.own))
         return
 
     elif args.card:
         print(card.get_book_card(args.card))
         return
-    
 
 if __name__ == "__main__":
     cli()
