@@ -2,7 +2,7 @@ import re
 import tools
 import cache
 from sklearn.feature_extraction.text import TfidfVectorizer
-import own_Tokenizer as own_Tok
+import own_tokenizer as own_Tok
 import own_tfidf
 import numpy as np
 

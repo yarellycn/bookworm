@@ -3,7 +3,7 @@ import cache
 import os
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-import own_Tokenizer
+import own_tokenizer
 import own_tfidf
 
 BOOK_COLLECTION = {
@@ -65,7 +65,7 @@ def similar_books(id_ask, top=5, ownCooking=False):
         corpus_tokens = []
 
         for book_text in corpus:
-            tokenize = own_Tokenizer.OwnTokenizer(data=book_text, lang=lang)
+            tokenize = own_tokenizer.OwnTokenizer(data=book_text, lang=lang)
             tokens = tokenize.tokenize(
                 sentence=False, punct=True, stopword=True, lower=True
             )
