@@ -1,7 +1,6 @@
 import argparse
-import os
 from cache import book_in_cache
-from tools import download_book, get_path_file
+from tools import download_book
 import topic_modeling as topic
 import summarize
 import similar
@@ -26,15 +25,9 @@ def validate_book_id(book_id):
 
 def prepare_book(book_id):
     book_id = validate_book_id(book_id)
-    book_path = get_path_file(book_id)
 
     if not book_in_cache(book_id):
         download_book(book_id)
-
-    if not os.path.exists(book_path):
-        raise ValueError(
-            f"This book id ({book_id}) does not exist. Try again with another number."
-        )
 
     return book_id
 
@@ -46,7 +39,6 @@ def execute_action(action_type, book_id, own=False):
         raise ValueError(f"Unknown action: {action_type}")
 
     book_id = prepare_book(book_id)
-    # book_id = validate_book_id(book_id)
 
     if action_type == "lexdiv":
         return lexdiv.get_lexical_diversity(book_id)
@@ -113,9 +105,3 @@ if __name__ == "__main__":
         cli()
     except ValueError as e:
         print(e)
-
-    # if book_id is None:
-    #     raise ValueError("Please specify a book id.")
-
-    # if (book_id <= 0) or not isinstance(book_id, int):
-    #     raise ValueError("book_id incorrect.")
