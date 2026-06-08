@@ -1,4 +1,4 @@
-import string, re, urllib.request ,os
+import string, re, urllib.request ,os, sys
 from nltk import sent_tokenize, word_tokenize
 import cache
 
@@ -17,6 +17,7 @@ def download_book(book_id):
     return path_file
    except:
       print(f"Erreur lors du telechargement de {book_id}")
+      exit()
 
 def read_text_file(filename):
     with open(filename, "r", encoding="utf-8") as file:

@@ -17,7 +17,7 @@ def run_bookworm(action_type, target, own=False):
         return lexdiv.get_lexical_diversity(int(target))
 
     elif action_type == "topics":
-        return topic.topic(target)
+        return topic.topic(target, own=own)
 
     elif action_type == "entities":
         return entities.get_entities(int(target))

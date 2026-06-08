@@ -70,13 +70,13 @@ def similar_books(id_ask, top=5 , ownCooking= False):
         tfidf=own_tfidf.OwnTfidf()
         tfidf_matrix = tfidf.fit(corpus_tokens)
 
-        matrix_similar= cosine_similarity(tfidf_matrix)
 
     else:
         #Version de la bibli
         vectorizer = TfidfVectorizer(stop_words=lang,max_features=3000)
         tfidf_matrix = vectorizer.fit_transform(corpus)
-        matrix_similar = cosine_similarity(tfidf_matrix)
+
+    matrix_similar= cosine_similarity(tfidf_matrix)
 
     target_index = book_ids.index(id_ask)
 
