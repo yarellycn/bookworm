@@ -58,6 +58,9 @@ class OwnTfidf():
             matrice_tfidf.append(matrice)
         return matrice_tfidf
     
+    def get_feature_name_out(self):
+        return self.Unique_Tokens
+    
  
 
 

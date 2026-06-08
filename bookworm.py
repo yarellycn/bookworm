@@ -52,7 +52,7 @@ def execute_action(action_type, book_id, own=False):
         return lexdiv.get_lexical_diversity(book_id)
 
     elif action_type == "topics":
-        return topic.topic(book_id)
+        return topic.topic(book_id, own=own)
 
     elif action_type == "entities":
         return entities.get_entities(book_id)

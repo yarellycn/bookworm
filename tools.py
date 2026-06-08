@@ -17,8 +17,10 @@ def download_book(book_id):
         print(f"Fichier {name_file} correctement téléchargé")
         return path_file
     except:
-        print(f"This book id ({book_id}) does not exist. Try again with another number.")
-        # sys.exit()
+        print(
+            f"This book id ({book_id}) does not exist. Try again with another number."
+        )
+        # exit()
 
 
 def read_text_file(filename):

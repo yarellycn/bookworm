@@ -18,7 +18,8 @@ class OwnTokenizer():
             return []
         
         data = self.data.lower() if lower else self.data
-        return re.findall(r'\w+', data) 
+        # return re.findall(r'\w+', data)  # problem avec les _
+        return re.findall(r'[a-zA-Z0-9]+', data) # voir pour mettre les accents fr
     
     def tok_sentence_brut(self, lower= False):
 
@@ -38,7 +39,7 @@ class OwnTokenizer():
         if method == "stem":
             return [self.stemmer.stem(token) for token in tokens]
         if method == "lemma":
-            return [self.stemmer.lemmatizer(token) for token in tokens]
+            return [self.lemmatizer.lemmatize(token) for token in tokens]
         return tokens
 
     def tokenize(self, sentence= False, punct = True, lower=False ,stopword=True , normalization=None):
