@@ -1,26 +1,31 @@
-import sys
-import string, re, urllib.request, os
+import string
+import re
+import urllib.request
+import os
 from nltk import sent_tokenize, word_tokenize
 import cache
+import urllib.error
 
 url = "https://www.gutenberg.org/ebooks/"
 url_end = ".txt.utf-8"
 
 
 def download_book(book_id):
+    url_final = f"{url}{book_id}{url_end}"
+    name_file = f"{book_id}_book.txt"
+    book_folder = "data/books"
+
+    path_file = os.path.join(book_folder, name_file)
+
     try:
-        url_final = f"{url}{book_id}{url_end}"
-        name_file = f"{book_id}_book.txt"
-        book_folder = "data/books"
-        path_file = os.path.join(book_folder, name_file)
         urllib.request.urlretrieve(url_final, path_file)
         print(f"Fichier {name_file} correctement téléchargé")
         return path_file
-    except:
-        print(
+
+    except urllib.error.HTTPError:
+        raise ValueError(
             f"This book id ({book_id}) does not exist. Try again with another number."
         )
-        # exit()
 
 
 def read_text_file(filename):
@@ -75,7 +80,7 @@ def get_book_language(path_file):
 
         return "english"
 
-    except ValueError as e:
+    except ValueError:
         print("Impossible de lire la langue dans {path_file}: {e}")
         return
 

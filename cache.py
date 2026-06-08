@@ -1,19 +1,21 @@
-import os, json
+import os
+import json
 
 FOLDER_CACHE = "data/cache"
-FOLDER_BOOK= "data/books"
+FOLDER_BOOK = "data/books"
 
-def book_in_cache(book_id): 
+
+def book_in_cache(book_id):
     name_file = f"{book_id}_book.txt"
     return os.path.exists(f"{FOLDER_BOOK}/{name_file}")
+
 
 def charge_cache(book_id, task, tagName=None):
     """Fonction de chargement de du cache si existant"""
     if tagName is not None:
         folder_file = os.path.join(FOLDER_CACHE, f"{book_id}_{task}_{tagName}.json")
-    else : 
+    else:
         folder_file = os.path.join(FOLDER_CACHE, f"{book_id}_{task}.json")
-    
 
     try:
         if os.path.exists(folder_file):
@@ -31,11 +33,11 @@ def save_cache(book_id, task, data, tagName=None):
         os.makedirs(FOLDER_CACHE)
 
     try:
-        if  tagName is not None:
+        if tagName is not None:
             folder_file = os.path.join(FOLDER_CACHE, f"{book_id}_{task}_{tagName}.json")
         else:
             folder_file = os.path.join(FOLDER_CACHE, f"{book_id}_{task}.json")
-        
+
         with open(folder_file, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=4, ensure_ascii=False)
     except:

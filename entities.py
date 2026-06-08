@@ -8,14 +8,39 @@ from nltk import ne_chunk, pos_tag, word_tokenize
 nlp = spacy.load("en_core_web_sm")
 
 PERSON_CLUES = {
-    "mr", "mrs", "miss", "ms", "sir", "lady", "lord", "king", "queen",
-    "captain", "doctor", "dr", "professor", "father", "mother"
+    "mr",
+    "mrs",
+    "miss",
+    "ms",
+    "sir",
+    "lady",
+    "lord",
+    "king",
+    "queen",
+    "captain",
+    "doctor",
+    "dr",
+    "professor",
+    "father",
+    "mother",
 }
 
 LOCATION_CLUES = {
-    "in", "at", "from", "to", "near", "inside", "outside", "toward",
-    "towards", "through", "across", "around", "into"
+    "in",
+    "at",
+    "from",
+    "to",
+    "near",
+    "inside",
+    "outside",
+    "toward",
+    "towards",
+    "through",
+    "across",
+    "around",
+    "into",
 }
+
 
 def clean_entity(name):
     name = name.replace("'s", "").replace("’s", "")
@@ -24,26 +49,28 @@ def clean_entity(name):
     name = name.removeprefix("The ")
     return " ".join(name.split())
 
+
 def is_valid_entity(name):
     if len(name) < 2:
         return False
 
     if name.lower().startswith("chapter"):
         return False
-    
+
     if name.endswith(" THE"):
         return False
-    
+
     if name.startswith("_"):
         return False
-    
+
     if name.lower() in {"english", "french"}:
         return False
-    
+
     if name.isupper():
         return False
 
     return True
+
 
 def looks_like_sentence_start_false_positive(name, sentence):
     words = word_tokenize(sentence)
@@ -55,6 +82,7 @@ def looks_like_sentence_start_false_positive(name, sentence):
 
     return name == first_word and len(name.split()) == 1
 
+
 def has_person_context(name, sentence):
     lowered = sentence.lower()
     name_lower = name.lower()
@@ -64,6 +92,7 @@ def has_person_context(name, sentence):
             return True
 
     return False
+
 
 def has_location_context(name, sentence):
     lowered = sentence.lower()
@@ -75,12 +104,13 @@ def has_location_context(name, sentence):
 
     return False
 
+
 def get_entities_spacy(book_id, action="spacy"):
     cached = tools.setup_action(book_id, action)
 
     if cached is not None:
         return cached
-    
+
     path_file = tools.get_path_file(book_id)
     text = tools.header_and_footer_remover(path_file)
 
@@ -101,13 +131,11 @@ def get_entities_spacy(book_id, action="spacy"):
         elif entity.label_ in ["GPE", "LOC", "FAC"]:
             locations.add(name)
 
-    result = {
-        "characters": (sorted(characters)),
-        "locations": (sorted(locations))
-    }
+    result = {"characters": (sorted(characters)), "locations": (sorted(locations))}
 
     cache.save_cache(book_id, action, result)
     return result
+
 
 def get_entities(book_id, action="entities"):
     cached = tools.setup_action(book_id, action)
@@ -156,35 +184,25 @@ def get_entities(book_id, action="entities"):
                     location_context[name] += 1
 
     characters = {
-        name for name, count in character_counts.items()
+        name
+        for name, count in character_counts.items()
         if (
             count >= 3
             or character_context[name] >= 1
-            or len(name.split()) >= 2 and count >= 2
-            )
-        and not (
-            len(name.split()) == 1
-            and sentence_start_counts[name] >= count
-    )
+            or len(name.split()) >= 2
+            and count >= 2
+        )
+        and not (len(name.split()) == 1 and sentence_start_counts[name] >= count)
     }
 
     locations = {
-        name for name, count in location_counts.items()
-        if (
-            count >= 3
-            or location_context[name] >= 1
-            or len(name.split()) >= 2
-        )
-        and not (
-            len(name.split()) == 1
-            and sentence_start_counts[name] >= count * 0.6
-        )
+        name
+        for name, count in location_counts.items()
+        if (count >= 3 or location_context[name] >= 1 or len(name.split()) >= 2)
+        and not (len(name.split()) == 1 and sentence_start_counts[name] >= count * 0.6)
     }
 
-    result = {
-        "characters": sorted(characters),
-        "locations": sorted(locations)
-    }
+    result = {"characters": sorted(characters), "locations": sorted(locations)}
 
     cache.save_cache(book_id, action, result)
     return result
