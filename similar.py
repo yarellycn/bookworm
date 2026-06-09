@@ -31,9 +31,9 @@ BOOK_COLLECTION = {
 }
 
 
-def similar_books(id_ask, top=5, ownCooking=False):
+def similar_books(id_ask, top=5, own=False):
     id_ask = str(id_ask)
-    if ownCooking:
+    if own:
         tagName = "own"
     else:
         tagName = None
@@ -60,7 +60,7 @@ def similar_books(id_ask, top=5, ownCooking=False):
         corpus.append(book)
         book_ids.append(book_id)
 
-    if ownCooking:
+    if own:
         # version maison
         corpus_tokens = []
 

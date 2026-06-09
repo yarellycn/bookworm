@@ -48,7 +48,7 @@ def execute_action(action_type, book_id, own=False):
         return summarize.summarize_book(book_id)
 
     elif action_type == "similar":
-        return similar.similar_books(book_id, ownCooking=own)
+        return similar.similar_books(book_id, own=own)
 
     elif action_type == "card":
         return card.get_book_card(book_id)
@@ -66,7 +66,6 @@ def cli():
     groupe.add_argument("--card", type=int)
 
     parser.add_argument("--own", action="store_true")
-    parser.add_argument("ask", type=str, nargs="*")
 
     args = parser.parse_args()
 
@@ -87,7 +86,7 @@ def cli():
         return
 
     elif args.similar:
-        print(execute_action("similar", args.similar, ownCooking=args.own))
+        print(execute_action("similar", args.similar, own=args.own))
         return
 
     elif args.card:
