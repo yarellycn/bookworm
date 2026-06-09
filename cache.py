@@ -1,46 +1,51 @@
-import os
 import json
+import os
 
-FOLDER_CACHE = "data/cache"
-FOLDER_BOOK = "data/books"
+CACHE_FOLDER = "data/cache"
+BOOK_FOLDER = "data/books"
+FILE_NAME_END = "_book.txt"
 
 
 def book_in_cache(book_id):
-    name_file = f"{book_id}_book.txt"
-    return os.path.exists(f"{FOLDER_BOOK}/{name_file}")
+    """Return True if the book is already stored locally."""
+    book_filename = f"{book_id}{FILE_NAME_END}"
+    book_path = os.path.join(BOOK_FOLDER, book_filename)
+    return os.path.exists(book_path)
+
+
+def get_cache_path(book_id, task, tag_name=None):
+    """Return the cache file path for a book task."""
+    if tag_name is not None:
+        cache_filename = f"{book_id}_{task}_{tag_name}.json"
+    else:
+        cache_filename = f"{book_id}_{task}.json"
+
+    return os.path.join(CACHE_FOLDER, cache_filename)
 
 
 def charge_cache(book_id, task, tag_name=None):
-    """Fonction de chargement de du cache si existant"""
-    if tag_name is not None:
-        folder_file = os.path.join(FOLDER_CACHE, f"{book_id}_{task}_{tag_name}.json")
-    else:
-        folder_file = os.path.join(FOLDER_CACHE, f"{book_id}_{task}.json")
+    """Load cached data for a given book and task if available."""
+    cache_path = get_cache_path(book_id, task, tag_name)
 
     try:
-        if os.path.exists(folder_file):
-            with open(folder_file, "r", encoding="utf-8") as file:
+        if os.path.exists(cache_path):
+            with open(cache_path, "r", encoding="utf-8") as file:
                 return json.load(file)
         return None
-    except:
-        print(f"Erreur chache , Impossible de recherche le livre {book_id} en cache")
+    except Exception as e:
+        print(f"Cache error. Unable to load cached data for book {book_id}: {e}")
+        return None
 
 
 def save_cache(book_id, task, data, tag_name=None):
-    """Creation du cache avec ID et fonction utilisé , cache en json"""
+    """Save task results to a JSON cache file."""
+    if not os.path.isdir(CACHE_FOLDER):
+        os.makedirs(CACHE_FOLDER)
 
-    if not os.path.exists(FOLDER_CACHE):
-        os.makedirs(FOLDER_CACHE)
+    cache_path = get_cache_path(book_id, task, tag_name)
 
     try:
-        if tag_name is not None:
-            folder_file = os.path.join(FOLDER_CACHE, f"{book_id}_{task}_{tag_name}.json")
-        else:
-            folder_file = os.path.join(FOLDER_CACHE, f"{book_id}_{task}.json")
-
-        with open(folder_file, "w", encoding="utf-8") as f:
+        with open(cache_path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=4, ensure_ascii=False)
-    except:
-        print(
-            "Sauvegare du cache impossible pour le livre : {book_id} avec le fonction : {task}"
-        )
+    except Exception as e:
+        print(f"Cache save failed for book {book_id} and task '{task}': {e}")
