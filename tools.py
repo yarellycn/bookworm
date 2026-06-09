@@ -39,12 +39,10 @@ def download_book(book_id):
         raise ValueError(
             f"This book id ({book_id}) does not exist. Try again with another number."
         )
-    
+
     except urllib.error.URLError:
         # Signaler un problème de connection.
-        raise ConnectionError(
-            "Network is unreachable. Check your internet connection."
-        )
+        raise ConnectionError("Network is unreachable. Check your internet connection.")
 
 
 def read_text_file(filename):
@@ -90,7 +88,7 @@ def get_book_language(path_file):
             header = data[: start_match.start()]
         else:
             header = data
-        
+
         match = re.search(r"Language:\s+([a-zA-Z-]+)", header, flags=re.IGNORECASE)
 
         if match:
