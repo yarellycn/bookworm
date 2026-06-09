@@ -1,47 +1,31 @@
-import cache
-import tools
-
 from nltk import FreqDist
 
-
-def number_of_word_tokens(tokens):
-    """Return the number of word tokens in the book."""
-    return len(tokens)
+import cache
+import tools
 
 
 def frequency_count(tokens):
     """Return the frequency count of each word in the book."""
-    frequency_count = FreqDist(word for word in tokens)
-    return frequency_count
-
-
-def number_of_unique_word_tokens(tokens):
-    """Return the number of unique words in the book."""
-    return len(set(tokens))
+    return FreqDist(tokens)
 
 
 def number_of_tokens_occurring_once(tokens):
+    """Return the number of word tokens that appear only once."""
     frequency = frequency_count(tokens)
     tokens_occurring_once = [word for word, count in frequency.items() if count == 1]
     return len(tokens_occurring_once)
 
 
-def ratio_of_unique_word_tokens_to_word_tokens(tokens):
-    ratio = number_of_unique_word_tokens(tokens) / number_of_word_tokens(tokens)
-    return ratio
-
-
 def average_word_length(tokens):
+    """Return the average word length."""
+    if not tokens:
+        return 0
+
     return sum(len(word) for word in tokens) / len(tokens)
 
 
-def ratio_of_word_tokens_to_unique_word_tokens(tokens):
-    ratio = number_of_word_tokens(tokens) / number_of_unique_word_tokens(tokens)
-    return ratio
-
-
 def get_lexical_diversity(book_id, action="lexdiv"):
-    """Return the lexical diversity of a book."""
+    """Return lexical diversity metrics for a book."""
     cached = tools.setup_action(book_id, action)
 
     if cached is not None:
@@ -49,13 +33,17 @@ def get_lexical_diversity(book_id, action="lexdiv"):
 
     tokens = tools.get_tokens(book_id)
 
+    total_tokens = len(tokens)
+    unique_tokens = len(set(tokens))
+    hapax = number_of_tokens_occurring_once(tokens)
+
     result = {
-        "tok": int(number_of_word_tokens(tokens)),
-        "typ": int(number_of_unique_word_tokens(tokens)),
-        "hap": int(number_of_tokens_occurring_once(tokens)),
-        "ttr": float(ratio_of_unique_word_tokens_to_word_tokens(tokens)),
-        "mwl": float(average_word_length(tokens)),
-        "mwf": float(ratio_of_word_tokens_to_unique_word_tokens(tokens)),
+        "tok": total_tokens,
+        "typ": unique_tokens,
+        "hap": hapax,
+        "ttr": unique_tokens / total_tokens if total_tokens else 0,
+        "mwl": average_word_length(tokens),
+        "mwf": total_tokens / unique_tokens if unique_tokens else 0,
     }
 
     cache.save_cache(book_id, action, result)
