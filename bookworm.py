@@ -12,11 +12,6 @@ VALID_ACTIONS = {"lexdiv", "topics", "entities", "summarize", "similar", "card"}
 
 
 def validate_book_id(book_id):
-    try:
-        book_id = int(book_id)
-    except ValueError:
-        raise ValueError("Book id must be an integrer.")
-
     if book_id <= 0:
         raise ValueError("Book id must be positive.")
 
