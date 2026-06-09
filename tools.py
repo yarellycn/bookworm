@@ -15,11 +15,14 @@ def download_book(book_id):
     name_file = f"{book_id}_book.txt"
     book_folder = "data/books"
 
+    if not os.path.exists(book_folder):
+        os.makedirs(book_folder)
+        
     path_file = os.path.join(book_folder, name_file)
 
     try:
         urllib.request.urlretrieve(url_final, path_file)
-        print(f"Fichier {name_file} correctement téléchargé")
+        print(f"File {name_file} successfully downloaded.")
         return path_file
 
     except urllib.error.HTTPError:
