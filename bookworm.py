@@ -60,7 +60,7 @@ def execute_action(action_type, book_id, own=False):
 
 
 def cli():
-    parser = argparse.ArgumentParser(description="Etude de livre")
+    parser = argparse.ArgumentParser(description="Etude de livre", allow_abbrev=False)
 
     groupe = parser.add_mutually_exclusive_group(required=True)
     groupe.add_argument("--lexdiv", type=int)
