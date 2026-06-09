@@ -33,7 +33,7 @@ def section_cuter(book_id):
 def topic(book_id, action="topics", own=False):
     path_book = tools.get_path_file(book_id)
     if own:
-        cached = tools.setup_action(book_id, action, tagName="own")
+        cached = tools.setup_action(book_id, action, tag_name="own")
     else:
         cached = tools.setup_action(book_id, action)
 
@@ -87,7 +87,7 @@ def topic(book_id, action="topics", own=False):
         top_10_words = [word_name[i] for i in top_10_index if words_scores[i] > 0]
         dictionnaire_final[str(index_section + 1)] = top_10_words
     if own:
-        cache.save_cache(book_id, action, dictionnaire_final, tagName="own")
+        cache.save_cache(book_id, action, dictionnaire_final, tag_name="own")
     else:
         cache.save_cache(book_id, action, dictionnaire_final)
     return dictionnaire_final

@@ -34,11 +34,11 @@ BOOK_COLLECTION = {
 def similar_books(id_ask, top=5, own=False):
     id_ask = str(id_ask)
     if own:
-        tagName = "own"
+        tag_name = "own"
     else:
-        tagName = None
+        tag_name = None
 
-    cached = tools.setup_action(id_ask, "similar", tagName=tagName)
+    cached = tools.setup_action(id_ask, "similar", tag_name=tag_name)
 
     if cached is not None:
         return cached
@@ -99,5 +99,5 @@ def similar_books(id_ask, top=5, own=False):
 
     print(f" Si vous avez lu {BOOK_COLLECTION[id_ask]} , vous devriez aimer : ")
 
-    cache.save_cache(id_ask, "similar", reco_list, tagName=tagName)
+    cache.save_cache(id_ask, "similar", reco_list, tag_name=tag_name)
     return reco_list

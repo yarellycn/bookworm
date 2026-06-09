@@ -10,10 +10,10 @@ def book_in_cache(book_id):
     return os.path.exists(f"{FOLDER_BOOK}/{name_file}")
 
 
-def charge_cache(book_id, task, tagName=None):
+def charge_cache(book_id, task, tag_name=None):
     """Fonction de chargement de du cache si existant"""
-    if tagName is not None:
-        folder_file = os.path.join(FOLDER_CACHE, f"{book_id}_{task}_{tagName}.json")
+    if tag_name is not None:
+        folder_file = os.path.join(FOLDER_CACHE, f"{book_id}_{task}_{tag_name}.json")
     else:
         folder_file = os.path.join(FOLDER_CACHE, f"{book_id}_{task}.json")
 
@@ -26,15 +26,15 @@ def charge_cache(book_id, task, tagName=None):
         print(f"Erreur chache , Impossible de recherche le livre {book_id} en cache")
 
 
-def save_cache(book_id, task, data, tagName=None):
+def save_cache(book_id, task, data, tag_name=None):
     """Creation du cache avec ID et fonction utilisé , cache en json"""
 
     if not os.path.exists(FOLDER_CACHE):
         os.makedirs(FOLDER_CACHE)
 
     try:
-        if tagName is not None:
-            folder_file = os.path.join(FOLDER_CACHE, f"{book_id}_{task}_{tagName}.json")
+        if tag_name is not None:
+            folder_file = os.path.join(FOLDER_CACHE, f"{book_id}_{task}_{tag_name}.json")
         else:
             folder_file = os.path.join(FOLDER_CACHE, f"{book_id}_{task}.json")
 
