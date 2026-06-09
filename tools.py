@@ -10,8 +10,10 @@ import cache
 
 GUTENBERG_URL = "https://www.gutenberg.org/ebooks/"
 GUTENBERG_URL_END = ".txt.utf-8"
-FILE_NAME_END = "_book.txt"
+
 BOOK_FOLDER = "data/books"
+FILE_NAME_END = "_book.txt"
+
 START_PATTERN = r"\*\*\*\s*START OF THE PROJECT GUTENBERG EBOOK.*?\*\*\*"
 END_PATTERN = r"\*\*\*\s*END OF THE PROJECT GUTENBERG EBOOK.*?\*\*\*"
 
@@ -82,6 +84,7 @@ def get_book_language(path_file):
             header = data[: start_match.start()]
         else:
             header = data
+        
         match = re.search(r"Language:\s+([a-zA-Z-]+)", header, flags=re.IGNORECASE)
 
         if match:
