@@ -35,9 +35,15 @@ def download_book(book_id):
         print(f"File {name_file} successfully downloaded.")
 
     except urllib.error.HTTPError:
-        # Signaler un ID de livre invalide.
+        # Signaler un ID de livre invalide (due to 404 server response)
         raise ValueError(
             f"This book id ({book_id}) does not exist. Try again with another number."
+        )
+    
+    except urllib.error.URLError:
+        # Signaler un problème de connection.
+        raise ConnectionError(
+            "Network is unreachable. Check your internet connection."
         )
 
 
