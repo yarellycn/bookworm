@@ -110,7 +110,7 @@ def clean_and_word_tokenize(file_path):
 
 def setup_action(book_id, action, tag_name=None):
     """Load cached data or download the book if needed."""
-    cache_action = cache.charge_cache(book_id, action, tag_name=tag_name)
+    cache_action = cache.load_cache(book_id, action, tag_name=tag_name)
 
     if cache_action is not None:
         return cache_action

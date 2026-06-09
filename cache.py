@@ -23,7 +23,7 @@ def get_cache_path(book_id, task, tag_name=None):
     return os.path.join(CACHE_FOLDER, cache_filename)
 
 
-def charge_cache(book_id, task, tag_name=None):
+def load_cache(book_id, task, tag_name=None):
     """Load cached data for a given book and task if available."""
     cache_path = get_cache_path(book_id, task, tag_name)
 
