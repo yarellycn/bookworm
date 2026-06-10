@@ -1,11 +1,12 @@
-import string
 import re
-from nltk.stem import PorterStemmer, WordNetLemmatizer
+import string
+
 from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer, WordNetLemmatizer
 
 
 class OwnTokenizer:
-    """This class is for tokenize , you can fin many option for cut your text in words ou sentence and removed usless word or punctuation"""
+    """Custom tokenizer with options for stopwords, punctuation, and normalization."""
 
     def __init__(self, data, lang="english"):
         self.data = data
@@ -14,7 +15,8 @@ class OwnTokenizer:
         self.stemmer = PorterStemmer()
         self.lemmatizer = WordNetLemmatizer()
 
-    def tok_word_brut(self, lower=False):
+    def tokenize_words(self, lower=False):
+        """Split text into word tokens."""
         if not self.data:
             return []
 
@@ -22,44 +24,48 @@ class OwnTokenizer:
         # return re.findall(r'\w+', data)  # problem avec les _
         return re.findall(r"[a-zA-Z0-9]+", data)  # voir pour mettre les accents fr
 
-    def tok_sentence_brut(self, lower=False):
-
+    def tokenize_sentences(self, lower=False):
+        """Split text into sentence tokens."""
         if not self.data:
             return []
 
         data = self.data.lower() if lower else self.data
         return re.split(r"(?<=[.!?])\s+", data)
 
-    def remover_stopword(self, tokens):
+    def remove_stopwords(self, tokens):
+        """Remove stopwords from tokens."""
         return [token for token in tokens if token not in self.stop_words]
 
-    def remover_punctuation(self, tokens):
+    def remove_punctuation(self, tokens):
+        """Remove punctuation tokens."""
         return [token for token in tokens if token not in string.punctuation]
 
     def normalize(self, tokens, method=None):
+        """Normalize tokens using stemming or lemmatization."""
         if method == "stem":
             return [self.stemmer.stem(token) for token in tokens]
+
         if method == "lemma":
             return [self.lemmatizer.lemmatize(token) for token in tokens]
+
         return tokens
 
     def tokenize(
         self, sentence=False, punct=True, lower=False, stopword=True, normalization=None
     ):
-        """Select your custome tokenize"""
-
+        """Return tokens according to the selected options."""
         if sentence:
-            tokens = self.tok_sentence_brut(lower)
-        else:
-            tokens = self.tok_word_brut(lower)
+            return self.tokenize_sentences(lower)
+
+        tokens = self.tokenize_words(lower)
 
         if stopword:
-            tokens = self.remover_stopword(tokens=tokens)
+            tokens = self.remove_stopwords(tokens)
 
         if punct:
-            tokens = self.remover_punctuation(tokens=tokens)
+            tokens = self.remove_punctuation(tokens)
 
-        if normalization and not sentence:
-            tokens = self.normalize(tokens=tokens, method=normalization)
+        if normalization:
+            tokens = self.normalize(tokens, method=normalization)
 
         return tokens
