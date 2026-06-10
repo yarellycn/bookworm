@@ -2,61 +2,69 @@ import math
 
 
 class OwnTfidf:
+    """Custom TF-IDF vectorizer."""
+
     def __init__(self):
-        self.Unique_Tokens = []
-        self.word_idf_scores = {}  # stokage score idf par mot
+        self.unique_tokens = []
+        self.word_idf_scores = {}  # Stockage des scores IDF par mot.
 
-    def calcul_tf(self, tokens):
-        tf_dict = {}
-        words_nombers = len(tokens)
+    def calculate_tf(self, tokens):
+        """Calculate term frequency scores for a list of tokens."""
+        tf_scores = {}
+        word_count = len(tokens)
 
-        # secu
-        if words_nombers == 0:
-            return tf_dict
+        # Sécurité : éviter une division par zéro.
+        if word_count == 0:
+            return tf_scores
 
         for word in tokens:
             # si le mot n'est pas présent je met +1 donc tous est à +1 si juste 1 fois
-            tf_dict[word] = tf_dict.get(word, 0) + 1
+            tf_scores[word] = tf_scores.get(word, 0) + 1
 
-        # normalisation
-        for word in tf_dict:
-            tf_dict[word] = tf_dict[word] / words_nombers
+        # Normaliser par le nombre total de mots.
+        for word in tf_scores:
+            tf_scores[word] = tf_scores[word] / word_count
 
-        return tf_dict
+        return tf_scores
 
-    def calcul_idf(self, corpus):
-        # calcul de l idf des mots sur l'esemble choisi
-        size_corpus = len(corpus)
-        df_dict = {}
+    def calculate_idf(self, corpus):
+        """Calculate inverse document frequency scores for a corpus."""
+        corpus_size = len(corpus)
+        document_frequencies = {}
 
         for tokens in corpus:
-            unique = set(tokens)
-            for word in unique:
-                df_dict[word] = df_dict.get(word, 0) + 1
+            unique_tokens = set(tokens)
+            for word in unique_tokens:
+                document_frequencies[word] = document_frequencies.get(word, 0) + 1
 
-        idf_dict = {}
-        for word, df in df_dict.items():
-            idf_dict[word] = math.log((1 + size_corpus) / (1 + df)) + 1
+        idf_scores = {}
+        for word, document_frequency in document_frequencies.items():
+            idf_scores[word] = (
+                math.log((1 + corpus_size) / (1 + document_frequency)) + 1
+            )
 
-        return idf_dict
+        return idf_scores
 
     def fit(self, corpus):
-        self.word_idf_scores = self.calcul_idf(corpus=corpus)
-        self.Unique_Tokens = sorted(list(self.word_idf_scores.keys()))
+        """Fit the vectorizer and return the TF-IDF matrix."""
+        self.word_idf_scores = self.calculate_idf(corpus=corpus)
+        self.unique_tokens = sorted(self.word_idf_scores.keys())
 
-        matrice_tfidf = []
+        tfidf_matrix = []
 
         for tokens in corpus:
-            tf_corpus = self.calcul_tf(tokens=tokens)
+            tf_scores = self.calculate_tf(tokens=tokens)
+            row = []
 
-            matrice = []
-            for token in self.Unique_Tokens:
-                tf = tf_corpus.get(token, 0)
+            for token in self.unique_tokens:
+                tf = tf_scores.get(token, 0)
                 idf = self.word_idf_scores.get(token, 0)
-                matrice.append(tf * idf)
+                row.append(tf * idf)
 
-            matrice_tfidf.append(matrice)
-        return matrice_tfidf
+            tfidf_matrix.append(row)
+
+        return tfidf_matrix
 
     def get_feature_name_out(self):
-        return self.Unique_Tokens
+        """Return the vocabulary learned during fitting."""
+        return self.unique_tokens
