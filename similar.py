@@ -1,10 +1,12 @@
-import tools
-import cache
 import os
+
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-import own_tokenizer
+
+import cache
 import own_tfidf
+import own_tokenizer
+import tools
 
 BOOK_COLLECTION = {
     "11": "Alice's Adventures in Wonderland",
@@ -31,73 +33,96 @@ BOOK_COLLECTION = {
 }
 
 
-def similar_books(id_ask, top=5, own=False):
-    id_ask = str(id_ask)
-    if own:
-        tag_name = "own"
-    else:
-        tag_name = None
+def get_collection_corpus():
+    """Return book IDs and cleaned book texts from the collection."""
+    corpus = []
+    book_ids = []
 
-    cached = tools.setup_action(id_ask, "similar", tag_name=tag_name)
+    for book_id in BOOK_COLLECTION.keys():
+        book_path = tools.get_path_file(book_id)
+
+        if not os.path.exists(book_path):
+            tools.download_book(book_id)
+
+        book = tools.header_and_footer_remover(book_path)
+        corpus.append(book)
+        book_ids.append(book_id)
+
+    return book_ids, corpus
+
+
+def build_own_tfidf_matrix(corpus, language):
+    """Build a TF-IDF matrix using the custom tokenizer."""
+    corpus_tokens = []
+
+    for book_text in corpus:
+        tokenize = own_tokenizer.OwnTokenizer(data=book_text, lang=language)
+        tokens = tokenize.tokenize(
+            sentence=False, punct=True, stopword=True, lower=True
+        )
+        corpus_tokens.append(tokens)
+
+    tfidf = own_tfidf.OwnTfidf()
+    return tfidf.fit(corpus_tokens)
+
+
+def build_sklearn_tfidf_matrix(corpus, language):
+    """Build a TF-IDF matrix using scikit-learn."""
+    vectorizer = TfidfVectorizer(stop_words=language, max_features=3000)
+    return vectorizer.fit_transform(corpus)
+
+
+def get_recommendation_titles(book_ids, similarity_scores, book_id, top):
+    """Return the top recommended book titles."""
+    sorted_indexes = similarity_scores.argsort()[::-1]
+    recommendations = []
+
+    for index in sorted_indexes:
+        recommended_id = book_ids[index]
+        if recommended_id == book_id:
+            continue
+
+        recommendations.append(BOOK_COLLECTION[recommended_id])
+
+        if len(recommendations) == top:
+            break
+
+    return recommendations
+
+
+def similar_books(book_id, top=5, own=False):
+    """Return books similar to the requested book."""
+    book_id = str(book_id)
+    tag_name = "own" if own else None
+    book_path = tools.get_path_file(book_id)
+
+    cached = tools.setup_action(book_id, "similar", tag_name=tag_name)
 
     if cached is not None:
         return cached
 
-    if id_ask not in BOOK_COLLECTION:
-        print(" L'id livre n'est pas dan la collection")
+    if book_id not in BOOK_COLLECTION:
+        print(f"The book ID {book_id} is not in the collection.")
         return []
 
-    corpus = []
-    book_ids = []
-    for book_id in BOOK_COLLECTION.keys():
-        path_book = tools.get_path_file(book_id)  ### A check
-
-        if not os.path.exists(path_book):
-            tools.download_book(book_id)
-
-        book = tools.header_and_footer_remover(path_book)
-        lang = tools.get_book_language(path_book)
-        corpus.append(book)
-        book_ids.append(book_id)
+    book_ids, corpus = get_collection_corpus()
+    language = tools.get_book_language(book_path)
 
     if own:
-        # version maison
-        corpus_tokens = []
-
-        for book_text in corpus:
-            tokenize = own_tokenizer.OwnTokenizer(data=book_text, lang=lang)
-            tokens = tokenize.tokenize(
-                sentence=False, punct=True, stopword=True, lower=True
-            )
-            corpus_tokens.append(tokens)
-
-        tfidf = own_tfidf.OwnTfidf()
-        tfidf_matrix = tfidf.fit(corpus_tokens)
-
+        tfidf_matrix = build_own_tfidf_matrix(corpus, language)
     else:
-        # Version de la bibli
-        vectorizer = TfidfVectorizer(stop_words=lang, max_features=3000)
-        tfidf_matrix = vectorizer.fit_transform(corpus)
+        tfidf_matrix = build_sklearn_tfidf_matrix(corpus, language)
 
-    matrix_similar = cosine_similarity(tfidf_matrix)
+    similarity_matrix = cosine_similarity(tfidf_matrix)
+    target_index = book_ids.index(book_id)
+    similarity_scores = similarity_matrix[target_index]
 
-    target_index = book_ids.index(id_ask)
+    recommendations = get_recommendation_titles(
+        book_ids, similarity_scores, book_id, top
+    )
 
-    score = matrix_similar[target_index]
-    index_sort = score.argsort()[::-1]
+    print(f"If you liked {BOOK_COLLECTION[book_id]}, you may also like: ")
 
-    reco_list = []
-    for id in index_sort:
-        reco_id = book_ids[id]
-        if reco_id == id_ask:
-            continue
+    cache.save_cache(book_id, "similar", recommendations, tag_name=tag_name)
 
-        reco_list.append(BOOK_COLLECTION[reco_id])
-
-        if len(reco_list) == top:
-            break
-
-    print(f" Si vous avez lu {BOOK_COLLECTION[id_ask]} , vous devriez aimer : ")
-
-    cache.save_cache(id_ask, "similar", reco_list, tag_name=tag_name)
-    return reco_list
+    return recommendations
