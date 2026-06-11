@@ -185,44 +185,6 @@ def get_entities(book_id, action="entities"):
             character_context.update(char_context)
             location_context.update(loc_context)
         
-
-    # for sentence in sentences:
-    #     # Appliquer le pipeline NLTK : tokenisation, POS tagging et NER.
-    #     tokens = word_tokenize(sentence)
-    #     tagged_words = pos_tag(tokens)
-    #     chunked_sentences = ne_chunk(tagged_words)
-
-    #     for chunk in chunked_sentences:
-    #         # Ignorer les éléments qui ne sont pas des entités nommées.
-    #         if not hasattr(chunk, "label"):
-    #             continue
-
-    #         # Reconstruire et nettoyer le nom de l'entité.
-    #         name = " ".join(word for word, _ in chunk)
-    #         name = clean_entity(name)
-
-    #         # Ignorer les entités jugées invalides.
-    #         if not is_valid_entity(name):
-    #             continue
-
-    #         # Détecter les entités apparaissant uniquement en début de phrase.
-    #         if looks_like_sentence_start_false_positive(name, sentence):
-    #             sentence_start_counts[name] += 1
-
-    #         # Compter les personnages et leurs indices de contexte.
-    #         if chunk.label() == "PERSON":
-    #             character_counts[name] += 1
-
-    #             if has_person_context(name, sentence):
-    #                 character_context[name] += 1
-
-    #         # Compter les lieux et leurs indices de contexte.
-    #         elif chunk.label() in ["GPE", "LOCATION"]:
-    #             location_counts[name] += 1
-
-    #             if has_location_context(name, sentence):
-    #                 location_context[name] += 1
-
     characters = {
         name
         for name, count in character_counts.items()
