@@ -1,5 +1,5 @@
 from collections import Counter
-
+import concurrent.futures
 from nltk import ne_chunk, pos_tag, word_tokenize
 
 import cache
@@ -106,6 +106,56 @@ def has_location_context(name, sentence):
     return False
 
 
+def process_sentence(sentence):
+
+    char_counts = Counter()
+    loc_counts = Counter()
+    sent_start_counts = Counter()
+
+    # Compteurs pour les indices de contexte.
+    char_context = Counter()
+    loc_context = Counter()
+
+    tokens = word_tokenize(sentence)
+    tagged_words = pos_tag(tokens)
+    chunked_sentences = ne_chunk(tagged_words)
+
+    for chunk in chunked_sentences:
+        # Ignorer les éléments qui ne sont pas des entités nommées.
+        if not hasattr(chunk, "label"):
+            continue
+
+        # Reconstruire et nettoyer le nom de l'entité.
+        name = " ".join(word for word, _ in chunk)
+        name = clean_entity(name)
+
+        # Ignorer les entités jugées invalides.
+        if not is_valid_entity(name):
+            continue
+
+        # Détecter les entités apparaissant uniquement en début de phrase.
+        if looks_like_sentence_start_false_positive(name, sentence):
+            sent_start_counts[name] += 1
+
+        # Compter les personnages et leurs indices de contexte.
+        if chunk.label() == "PERSON":
+            char_counts[name] += 1
+
+            if has_person_context(name, sentence):
+                char_context[name] += 1
+
+        # Compter les lieux et leurs indices de contexte.
+        elif chunk.label() in ["GPE", "LOCATION"]:
+            loc_counts[name] += 1
+
+            if has_location_context(name, sentence):
+                loc_context[name] += 1
+        
+    return char_counts, loc_counts, sent_start_counts, char_context, loc_context
+
+
+
+
 def get_entities(book_id, action="entities"):
     """Extract characters and locations using NLTK"""
     cached = tools.setup_action(book_id, action)
@@ -125,42 +175,53 @@ def get_entities(book_id, action="entities"):
     character_context = Counter()
     location_context = Counter()
 
-    for sentence in sentences:
-        # Appliquer le pipeline NLTK : tokenisation, POS tagging et NER.
-        tokens = word_tokenize(sentence)
-        tagged_words = pos_tag(tokens)
-        chunked_sentences = ne_chunk(tagged_words)
+    with concurrent.futures.ProcessPoolExecutor() as executor :
+        result = executor.map(process_sentence, sentences, chunksize=30)
 
-        for chunk in chunked_sentences:
-            # Ignorer les éléments qui ne sont pas des entités nommées.
-            if not hasattr(chunk, "label"):
-                continue
+        for char_counts, loc_counts, sent_start_counts, char_context, loc_context in result:
+            character_counts.update(char_counts)
+            location_counts.update(loc_counts)
+            sentence_start_counts.update(sent_start_counts)
+            character_context.update(char_context)
+            location_context.update(loc_context)
+        
 
-            # Reconstruire et nettoyer le nom de l'entité.
-            name = " ".join(word for word, _ in chunk)
-            name = clean_entity(name)
+    # for sentence in sentences:
+    #     # Appliquer le pipeline NLTK : tokenisation, POS tagging et NER.
+    #     tokens = word_tokenize(sentence)
+    #     tagged_words = pos_tag(tokens)
+    #     chunked_sentences = ne_chunk(tagged_words)
 
-            # Ignorer les entités jugées invalides.
-            if not is_valid_entity(name):
-                continue
+    #     for chunk in chunked_sentences:
+    #         # Ignorer les éléments qui ne sont pas des entités nommées.
+    #         if not hasattr(chunk, "label"):
+    #             continue
 
-            # Détecter les entités apparaissant uniquement en début de phrase.
-            if looks_like_sentence_start_false_positive(name, sentence):
-                sentence_start_counts[name] += 1
+    #         # Reconstruire et nettoyer le nom de l'entité.
+    #         name = " ".join(word for word, _ in chunk)
+    #         name = clean_entity(name)
 
-            # Compter les personnages et leurs indices de contexte.
-            if chunk.label() == "PERSON":
-                character_counts[name] += 1
+    #         # Ignorer les entités jugées invalides.
+    #         if not is_valid_entity(name):
+    #             continue
 
-                if has_person_context(name, sentence):
-                    character_context[name] += 1
+    #         # Détecter les entités apparaissant uniquement en début de phrase.
+    #         if looks_like_sentence_start_false_positive(name, sentence):
+    #             sentence_start_counts[name] += 1
 
-            # Compter les lieux et leurs indices de contexte.
-            elif chunk.label() in ["GPE", "LOCATION"]:
-                location_counts[name] += 1
+    #         # Compter les personnages et leurs indices de contexte.
+    #         if chunk.label() == "PERSON":
+    #             character_counts[name] += 1
 
-                if has_location_context(name, sentence):
-                    location_context[name] += 1
+    #             if has_person_context(name, sentence):
+    #                 character_context[name] += 1
+
+    #         # Compter les lieux et leurs indices de contexte.
+    #         elif chunk.label() in ["GPE", "LOCATION"]:
+    #             location_counts[name] += 1
+
+    #             if has_location_context(name, sentence):
+    #                 location_context[name] += 1
 
     characters = {
         name

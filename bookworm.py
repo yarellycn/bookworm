@@ -103,3 +103,5 @@ if __name__ == "__main__":
         cli()
     except ValueError as e:
         print(e)
+    except ConnectionError as e:
+        print(f"Error : {e} ")
