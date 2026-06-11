@@ -37,7 +37,7 @@ def build_own_tfidf_matrix(sections, language):
     corpus = []
 
     for section in sections:
-        tokenizer = own_tok.OwnTokenizer(data=section, language=language)
+        tokenizer = own_tok.OwnTokenizer(data=section, lang=language)
         tokens = tokenizer.tokenize(lower=True, stopword=True, punct=True)
         corpus.append(tokens)
 
