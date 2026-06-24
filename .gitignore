@@ -1,0 +1,10 @@
+__pycache__/
+
+venv/
+.env
+
+AGENTS.md
+
+data/books/
+data/cache/
+data/rdf/
