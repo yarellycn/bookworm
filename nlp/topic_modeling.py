@@ -3,10 +3,10 @@ import re
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-import cache
+import nlp.cache as cache
+import nlp.tools as tools
 import own_tfidf
 import own_tokenizer as own_tok
-import tools
 
 
 def regex_cut(book):
@@ -37,7 +37,7 @@ def build_own_tfidf_matrix(sections, language):
     corpus = []
 
     for section in sections:
-        tokenizer = own_tok.OwnTokenizer(data=section, language=language)
+        tokenizer = own_tok.OwnTokenizer(data=section, lang=language)
         tokens = tokenizer.tokenize(lower=True, stopword=True, punct=True)
         corpus.append(tokens)
 

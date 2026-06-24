@@ -1,0 +1,14 @@
+__pycache__
+venv
+pycache
+lib
+visual.py
+data/*
+books
+cache
+rdf
+AGENTS.md
+
+!data/books/.gitkeep
+!data/rdf/.gitkeep
+!data/cache/.gitkeep

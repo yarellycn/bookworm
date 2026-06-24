@@ -3,10 +3,10 @@ import os
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-import cache
+import nlp.cache as cache
+import nlp.tools as tools
 import own_tfidf
 import own_tokenizer
-import tools
 
 BOOK_COLLECTION = {
     "11": "Alice's Adventures in Wonderland",

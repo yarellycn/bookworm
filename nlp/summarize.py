@@ -2,8 +2,8 @@ from sumy.nlp.tokenizers import Tokenizer
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.summarizers.text_rank import TextRankSummarizer
 
-import cache
-import tools
+import nlp.cache as cache
+import nlp.tools as tools
 
 
 def summarize_book(book_id, sentence_count=4):

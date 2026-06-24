@@ -1,7 +1,7 @@
 from nltk import FreqDist
 
-import cache
-import tools
+import nlp.cache as cache
+import nlp.tools as tools
 
 
 def frequency_count(tokens):
