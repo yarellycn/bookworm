@@ -1,13 +1,13 @@
 import argparse
 
-import card
-import entities
-import lexical_diversity as lexdiv
-import similar
-import summarize
-import topic_modeling as topic
-from cache import book_in_cache
-from tools import download_book
+import nlp.card as card
+import nlp.entities as entities
+import nlp.lexical_diversity as lexdiv
+import nlp.similar as similar
+import nlp.summarize as summarize
+import nlp.topic_modeling as topic
+from nlp.cache import book_in_cache
+from nlp.tools import download_book
 
 VALID_ACTIONS = {"lexdiv", "topics", "entities", "summarize", "similar", "card"}
 

@@ -2,13 +2,13 @@ import os
 import urllib.request
 import xml.etree.ElementTree as ET
 
-import cache
-import entities
-import lexical_diversity as lexdiv
-import similar
-import summarize
-import tools
-import topic_modeling as topic
+import nlp.cache as cache
+import nlp.entities as entities
+import nlp.lexical_diversity as lexdiv
+import nlp.similar as similar
+import nlp.summarize as summarize
+import nlp.tools as tools
+import nlp.topic_modeling as topic
 
 RDF_FOLDER = "data/rdf"
 RDF_FILE_END = "_book.rdf"

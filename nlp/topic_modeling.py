@@ -3,10 +3,10 @@ import re
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-import cache
+import nlp.cache as cache
+import nlp.tools as tools
 import own_tfidf
 import own_tokenizer as own_tok
-import tools
 
 
 def regex_cut(book):

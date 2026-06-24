@@ -2,8 +2,8 @@ from collections import Counter
 import concurrent.futures
 from nltk import ne_chunk, pos_tag, word_tokenize
 
-import cache
-import tools
+import nlp.cache as cache
+import nlp.tools as tools
 
 
 PERSON_CLUES = {

@@ -6,7 +6,7 @@ import urllib.request
 
 from nltk import sent_tokenize, word_tokenize
 
-import cache
+import nlp.cache as cache
 
 GUTENBERG_URL = "https://www.gutenberg.org/ebooks/"
 GUTENBERG_URL_END = ".txt.utf-8"
