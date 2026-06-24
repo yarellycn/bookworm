@@ -1,13 +1,22 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
+from nlp.card import get_book_card
 
-app = FastAPI()
-
-
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+app = FastAPI(title="Bookworm API")
 
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: str | None = None):
-    return {"item_id": item_id, "q": q}
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
+
+@app.get("/books/{book_id}/card")
+def book_card(book_id: int):
+    if book_id <= 0:
+        raise HTTPException(status_code=400, detail="Book id must be positive.")
+
+    card = get_book_card(book_id)
+
+    if card is None:
+        raise HTTPException(status_code=400, detail="Book not found.")
+
+    return card
