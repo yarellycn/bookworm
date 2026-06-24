@@ -5,8 +5,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 import nlp.cache as cache
 import nlp.tools as tools
-import own_tfidf
-import own_tokenizer as own_tok
+import nlp.own_tfidf as own_tfidf
+import nlp.own_tokenizer as own_tok
 
 
 def regex_cut(book):

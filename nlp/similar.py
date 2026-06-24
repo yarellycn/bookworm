@@ -5,8 +5,8 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 import nlp.cache as cache
 import nlp.tools as tools
-import own_tfidf
-import own_tokenizer
+import nlp.own_tfidf as own_tfidf
+import nlp.own_tokenizer as own_tokenizer
 
 BOOK_COLLECTION = {
     "11": "Alice's Adventures in Wonderland",
