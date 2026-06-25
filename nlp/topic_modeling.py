@@ -26,7 +26,10 @@ def section_cutter(book_id):
     # Split avec regex pour chapter et ignorer des type maj, min assemblés.
     raw_sections = regex_cut(book=book)
     # Supprimer les petites sections issues du sommaire.
-    raw_sections = raw_sections[1:]
+    if len(raw_sections) <= 1:
+        raw_sections = [book]
+    else:
+        raw_sections = raw_sections[1:]
     # Mise en place du len pour suprimer les mini decoupes du sommaire
     sections = [s.strip() for s in raw_sections if len(s.strip()) > 100]
     return sections
